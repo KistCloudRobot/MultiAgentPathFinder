@@ -201,8 +201,8 @@ class Environment(object):
         return state.location.x >= 0 and state.location.x < self.dimension[0] \
             and state.location.y >= 0 and state.location.y < self.dimension[1] \
             and VertexConstraint(state.time, state.location) not in self.constraints.vertex_constraints \
-            and (state.location.x, state.location.y) not in self.obstacles \
-            and VertexConstraint(-1, state.location) not in self.constraints.vertex_constraints
+            and (state.location.x, state.location.y) not in self.obstacles
+            #and VertexConstraint(-1, state.location) not in self.constraints.vertex_constraints
 
     def transition_valid(self, state_1, state_2):
         return EdgeConstraint(state_1.time, state_1.location, state_2.location) not in self.constraints.edge_constraints
