@@ -1,0 +1,400 @@
+Vertex
+	name 1
+	type 1
+	pos 145.1 0.0 157.75
+	edge 205
+Vertex
+	name 8
+	type 1
+	pos 146.4 0.0 160.65
+	edge 221
+Vertex
+	name 7
+	type 1
+	pos 146.4 0.0 159.25
+	edge 220
+Vertex
+	name 3
+	type 1
+	pos 145.1 0.0 160.65
+	edge 207
+Vertex
+	name 2
+	type 1
+	pos 145.1 0.0 159.25
+	edge 206
+Vertex
+	name 9
+	type 1
+	pos 146.4 0.0 162.15
+	edge 222
+Vertex
+	name 4
+	type 1
+	pos 145.1 0.0 162.15
+	edge 208
+Vertex
+	name 10
+	type 1
+	pos 146.4 0.0 163.55
+	edge 223
+Vertex
+	name 5
+	type 1
+	pos 145.1 0.0 163.55
+	edge 209
+Vertex
+	name 6
+	type 1
+	pos 145.1 0.0 165.05
+	edge 210
+Vertex
+	name 15
+	type 1
+	pos 152.2 0.0 166.55
+	edge 225
+Vertex
+	name 236
+	type 0
+	pos 155.6 0.0 163.65
+	edge 237
+	edge 16
+	edge 235
+Vertex
+	name 210
+	type 0
+	pos 142.9 0.0 165.05
+	edge 211
+	edge 6
+	edge 209
+Vertex
+	name 222
+	type 0
+	pos 149.9 0.0 162.15
+	edge 223
+	edge 12
+	edge 221
+	edge 9
+Vertex
+	name 221
+	type 0
+	pos 149.9 0.0 160.75
+	edge 220
+	edge 222
+	edge 11
+	edge 8
+Vertex
+	name 220
+	type 0
+	pos 149.9 0.0 159.25
+	edge 221
+	edge 219
+	edge 7
+Vertex
+	name 219
+	type 0
+	pos 149.9 0.0 158.1
+	edge 218
+	edge 220
+	edge 21
+Vertex
+	name 225
+	type 0
+	pos 149.9 0.0 166.55
+	edge 224
+	edge 15
+	edge 214
+	edge 226
+Vertex
+	name 211
+	type 0
+	pos 142.9 0.0 167.4
+	edge 210
+	edge 212
+Vertex
+	name 209
+	type 0
+	pos 142.9 0.0 163.55
+	edge 210
+	edge 5
+	edge 208
+Vertex
+	name 208
+	type 0
+	pos 142.9 0.0 162.15
+	edge 209
+	edge 207
+	edge 4
+Vertex
+	name 207
+	type 0
+	pos 142.9 0.0 160.65
+	edge 208
+	edge 3
+	edge 206
+Vertex
+	name 206
+	type 0
+	pos 142.9 0.0 159.25
+	edge 207
+	edge 2
+	edge 205
+Vertex
+	name 205
+	type 0
+	pos 142.9 0.0 157.75
+	edge 206
+	edge 1
+	edge 204
+Vertex
+	name 203
+	type 0
+	pos 144.45 0.0 154.9
+	edge 204
+	edge 202
+Vertex
+	name 204
+	type 0
+	pos 142.9 0.0 154.9
+	edge 205
+	edge 203
+Vertex
+	name 218
+	type 0
+	pos 149.9 0.0 154.9
+	edge 219
+	edge 202
+	edge 217
+Vertex
+	name 238
+	type 0
+	pos 155.6 0.0 167.2
+	edge 237
+	edge 239
+	edge 241
+Vertex
+	name 20
+	type 1
+	pos 155.6 0.0 170.7
+	edge 239
+Vertex
+	name 237
+	type 0
+	pos 155.6 0.0 165.05
+	edge 236
+	edge 238
+	edge 17
+Vertex
+	name 224
+	type 0
+	pos 149.9 0.0 165.05
+	edge 223
+	edge 225
+	edge 14
+Vertex
+	name 223
+	type 0
+	pos 149.9 0.0 163.65
+	edge 224
+	edge 222
+	edge 13
+	edge 10
+Vertex
+	name 234
+	type 0
+	pos 155.6 0.0 159.25
+	edge 235
+	edge 22
+	edge 233
+Vertex
+	name 14
+	type 1
+	pos 152.2 0.0 165.05
+	edge 224
+Vertex
+	name 17
+	type 1
+	pos 153.5 0.0 165.05
+	edge 237
+Vertex
+	name 13
+	type 1
+	pos 152.2 0.0 163.65
+	edge 223
+Vertex
+	name 16
+	type 1
+	pos 153.5 0.0 163.65
+	edge 236
+Vertex
+	name 12
+	type 1
+	pos 152.2 0.0 162.15
+	edge 222
+Vertex
+	name 11
+	type 1
+	pos 152.2 0.0 160.75
+	edge 221
+Vertex
+	name 235
+	type 0
+	pos 155.6 0.0 161.4
+	edge 234
+	edge 236
+	edge 240
+Vertex
+	name 202
+	type 0
+	pos 146 0.0 154.9
+	edge 203
+	edge 201
+	edge 218
+Vertex
+	name 201
+	type 0
+	pos 146 0.0 153.5
+	edge 202
+	edge 101
+Vertex
+	name 101
+	type 2
+	pos 146 0.0 152
+	edge 201
+Vertex
+	name 239
+	type 0
+	pos 155.6 0.0 168.9
+	edge 238
+	edge 20
+Vertex
+	name 22
+	type 1
+	pos 152.9 0.0 159.25
+	edge 234
+Vertex
+	name 21
+	type 1
+	pos 152.9 0.0 158.1
+	edge 219
+Vertex
+	name 214
+	type 0
+	pos 148.9 0.0 167.4
+	edge 225
+	edge 215
+	edge 213
+Vertex
+	name 227
+	type 0
+	pos 150.4 0.0 168.9
+	edge 19
+	edge 226
+Vertex
+	name 215
+	type 0
+	pos 148.9 0.0 168.9
+	edge 214
+	edge 18
+Vertex
+	name 19
+	type 1
+	pos 150.4 0.0 170.7
+	edge 227
+Vertex
+	name 18
+	type 1
+	pos 148.9 0.0 170.7
+	edge 215
+Vertex
+	name 213
+	type 0
+	pos 147 0.0 167.4
+	edge 212
+	edge 214
+Vertex
+	name 212
+	type 0
+	pos 145.2 0.0 167.4
+	edge 211
+	edge 213
+Vertex
+	name 240
+	type 0
+	pos 153.5 0.0 161.4
+	edge 235
+Vertex
+	name 241
+	type 0
+	pos 153.5 0.0 167.2
+	edge 238
+Vertex
+	name 230
+	type 0
+	pos 155.6 0.0 154.9
+	edge 229
+	edge 231
+	edge 233
+Vertex
+	name 233
+	type 0
+	pos 155.6 0.0 157.1
+	edge 230
+	edge 234
+Vertex
+	name 226
+	type 0
+	pos 150.4 0.0 167.4
+	edge 225
+	edge 227
+Vertex
+	name 217
+	type 0
+	pos 152 0.0 154.9
+	edge 218
+	edge 216
+Vertex
+	name 216
+	type 0
+	pos 152 0.0 153.5
+	edge 217
+	edge 102
+Vertex
+	name 229
+	type 0
+	pos 154.3 0.0 154.9
+	edge 230
+	edge 228
+Vertex
+	name 228
+	type 0
+	pos 154.3 0.0 153.5
+	edge 229
+	edge 103
+Vertex
+	name 231
+	type 0
+	pos 156.5 0.0 154.9
+	edge 230
+	edge 232
+Vertex
+	name 232
+	type 0
+	pos 156.5 0.0 153.5
+	edge 231
+	edge 104
+Vertex
+	name 102
+	type 2
+	pos 152 0.0 152
+	edge 216
+Vertex
+	name 103
+	type 2
+	pos 154.3 0.0 152
+	edge 228
+Vertex
+	name 104
+	type 2
+	pos 156.5 0.0 152
+	edge 232

@@ -13,9 +13,31 @@ from math import fabs
 from itertools import combinations
 from copy import deepcopy
 
-from cbs.a_star import AStar
+from a_star import AStar
+
+#Dr. Oh Map Parse Tool
+from map_parse import MapMOS as mapParser
 
 import time
+
+
+
+def grid2graph(xy_tuple,g2g_map):
+    for v in g2g_map:
+        if xy_tuple in v:
+            return v[1]
+    
+    print("grid not found in graph")
+    return False
+
+def graph2grid(vert_name,g2g_map):
+    for v in g2g_map:
+        if vert_name in v:
+            return v[0]
+
+    print("grid not found in graph")
+    return False
+
 
 class Location(object):
     def __init__(self, x=-1, y=-1):
@@ -109,9 +131,36 @@ class Environment(object):
 
         self.a_star = AStar(self)
 
+        #Jeeho Edit
+        self.vertices_with_name = []
+        self.edges_dict = {}
+
     def get_neighbors(self, state):
         neighbors = []
+        neighbor_nodes = []
 
+        #Jeeho Edit
+        #get corresponding graph node
+        node_name = grid2graph((state.location.x,state.location.y),self.vertices_with_name)
+
+        if node_name in self.edges_dict:
+            neighbor_nodes = self.edges_dict[node_name]
+
+        #add current state
+        # Wait action
+        n = State(state.time + 1, state.location)
+        if self.state_valid(n):
+            neighbors.append(n)
+        for nn in neighbor_nodes:
+            temp_tuple = graph2grid(nn,self.vertices_with_name)
+            #neighbors in State data type
+            n = State(state.time+1,Location(temp_tuple[0],temp_tuple[1]))
+
+            if self.state_valid(n) and self.transition_valid(state, n):
+                neighbors.append(n)
+
+
+        """
         # Wait action
         n = State(state.time + 1, state.location)
         if self.state_valid(n):
@@ -132,6 +181,8 @@ class Environment(object):
         n = State(state.time + 1, Location(state.location.x+1, state.location.y))
         if self.state_valid(n) and self.transition_valid(state, n):
             neighbors.append(n)
+        """
+
         return neighbors
 
 
@@ -329,10 +380,29 @@ def main():
             print(exc)
 
     dimension = param["map"]["dimensions"]
-    obstacles = param["map"]["obstacles"]
+    #obstacles = param["map"]["obstacles"]
+    vertices_yaml = param["map"]["vertices"] #list
+    vertices = []
+    vertices_with_name = [] #list of tuple
+    for item in vertices_yaml:
+        vertices.append((item[0],item[1]))
+        vertices_with_name.append(((item[0],item[1]),item[2]))
+
+    obstacles = []
     agents = param['agents']
 
+    for x in range(dimension[0]):
+        for y in range(dimension[1]):
+            if((x,y) not in vertices):
+                obstacles.append((x,y))
+
+    #parse edges
+    edges_dict = mapParser.MapMOS("map_parse/map_cloud.txt").Edge
+
     env = Environment(dimension, agents, obstacles)
+    env.vertices_with_name = vertices_with_name
+    env.edges_dict = edges_dict
+
 
     # Searching
     cbs = CBS(env)

@@ -52,6 +52,16 @@ class Animation:
       x, y = o[0], o[1]
       self.patches.append(Rectangle((x - 0.5, y - 0.5), 1, 1, facecolor='red', edgecolor='red'))
 
+    #fill stations
+    for s in map["map"]["stations"]:
+      x, y = s[0], s[1]
+      self.patches.append(Rectangle((x - 0.5, y - 0.5), 1, 1, facecolor='yellow', edgecolor='black'))
+
+    #fill lifts
+    for s in map["map"]["lifts"]:
+      x, y = s[0], s[1]
+      self.patches.append(Rectangle((x - 0.5, y - 0.5), 1, 1, facecolor='darkviolet', edgecolor='black'))
+
     # create agents:
     self.T = 0
     # draw goals first
@@ -154,6 +164,41 @@ if __name__ == "__main__":
 
   with open(args.map) as map_file:
     map = yaml.load(map_file, Loader=yaml.FullLoader)
+
+
+  #Jeeho Edit
+  dimension = map["map"]["dimensions"]
+  vertices_yaml = map["map"]["vertices"] #list
+  vertices = []
+  vertices_with_name = [] #list of tuple
+  for item in vertices_yaml:
+      vertices.append((item[0],item[1]))
+      vertices_with_name.append(((item[0],item[1]),item[2]))
+
+  #add obstacles
+  obstacles = []
+  for x in range(dimension[0]):
+      for y in range(dimension[1]):
+          if((x,y) not in vertices):
+              obstacles.append((x,y))
+
+  map["map"]["obstacles"] = obstacles
+
+  #add stations for visualization purpose
+  stations =[]
+  for v in vertices_with_name:
+    if int(v[1]) < 20:
+      stations.append(v[0])
+
+  map["map"]["stations"] = stations
+
+  #add lift for visualization purpose
+  lifts = []
+  for v in vertices_with_name:
+    if int(v[1]) > 20 and int(v[1]) < 30:
+      lifts.append(v[0])
+
+  map["map"]["lifts"] = lifts
 
   with open(args.schedule) as states_file:
     schedule = yaml.load(states_file, Loader=yaml.FullLoader)
