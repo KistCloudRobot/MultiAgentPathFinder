@@ -21,7 +21,6 @@ from map_parse import MapMOS as mapParser
 import time
 
 
-
 def grid2graph(xy_tuple,g2g_map):
     for v in g2g_map:
         if xy_tuple in v:
@@ -47,6 +46,28 @@ class Location(object):
         return self.x == other.x and self.y == other.y
     def __str__(self):
         return str((self.x, self.y))
+
+#Jeeho Edit
+class node:
+    def __init__(self):
+        self.location_grid = Location()
+        self.name = ""
+        self.type = ""
+        self.temp_open = False
+    
+    def __init__(self, tuple_in):
+        self.location_grid = Location(tuple_in[0][0],tuple_in[0][1])
+        self.name = tuple_in[1]
+        self.type = tuple_in[2]
+        self.temp_open = False
+
+#Jeeho Edit
+def to_node_list(tuple_list_in):
+    out_list = []
+    for item in  tuple_list_in:
+        out_list.append(node(item))
+
+    return out_list
 
 class State(object):
     def __init__(self, time, location):
@@ -132,15 +153,32 @@ class Environment(object):
         self.a_star = AStar(self)
 
         #Jeeho Edit
+        self.node_list = []
         self.vertices_with_name = []
         self.edges_dict = {}
+
+    #Jeeho Edit
+    def get_agent_goal(self, agent_name):
+        for a in self.agents:
+            if a["name"] == agent_name:
+                return a['goal']
+
+    def get_node_type_by_name(self,node_name):
+        for n in self.node_list:
+            if(n.name == node_name):
+                return n.type
+
+    def get_node_temp_open_by_name(self,node_name):
+        for n in self.node_list:
+            if(n.name == node_name):
+                return n.temp_open
+
 
     def get_neighbors(self, state):
         neighbors = []
         neighbor_nodes = []
 
-        #Jeeho Edit
-        #get corresponding graph node
+        
         node_name = grid2graph((state.location.x,state.location.y),self.vertices_with_name)
 
         if node_name in self.edges_dict:
@@ -152,12 +190,21 @@ class Environment(object):
         if self.state_valid(n):
             neighbors.append(n)
         for nn in neighbor_nodes:
-            temp_tuple = graph2grid(nn,self.vertices_with_name)
-            #neighbors in State data type
-            n = State(state.time+1,Location(temp_tuple[0],temp_tuple[1]))
+            #Jeeho Edit
+            #get corresponding graph node
+            #add if node, only add if station is temp_open
+            add_verdict = False
+            if(self.get_node_type_by_name(nn)=='node'):
+                add_verdict = True
+            elif(self.get_node_temp_open_by_name(nn) == True):
+                add_verdict = True
+            if(add_verdict):
+                temp_tuple = graph2grid(nn,self.vertices_with_name)
+                #neighbors in State data type
+                n = State(state.time+1,Location(temp_tuple[0],temp_tuple[1]))
 
-            if self.state_valid(n) and self.transition_valid(state, n):
-                neighbors.append(n)
+                if self.state_valid(n) and self.transition_valid(state, n):                
+                    neighbors.append(n)
 
 
         """
@@ -277,14 +324,38 @@ class Environment(object):
 
             self.agent_dict.update({agent['name']:{'start':start_state, 'goal':goal_state}})
 
+    #Jeeho Edit
+    def close_all_temp_open(self):
+        #close all goals
+        for agent in self.agent_dict.keys():
+            #temp_goal = self.agent_dict[agent]['goal']
+            for n in self.node_list:
+                n.temp_open = False
+
     def compute_solution(self):
         solution = {}
+        #Jeeho Edit
+        #modify goal station accessibility by agent
+
+        #close all goals
+        self.close_all_temp_open()
+
         for agent in self.agent_dict.keys():
+            #open agent station goal
+            g_loc = self.get_agent_goal(agent)
+            g_loc_location = Location(g_loc[0],g_loc[1])
+            for n in self.node_list:
+                if(g_loc_location == n.location_grid):
+                    n.temp_open = True
+                    break
+
             self.constraints = self.constraint_dict.setdefault(agent, Constraints())
             local_solution = self.a_star.search(agent)
             if not local_solution:
                 return False
             solution.update({agent:local_solution})
+
+        self.close_all_temp_open()
         return solution
 
     def compute_solution_cost(self, solution):
@@ -318,8 +389,8 @@ class CBS(object):
         for agent in self.env.agent_dict.keys():
             start.constraint_dict[agent] = Constraints()
 
-        mvc = VertexConstraint(-1,Location(2,2))
-        start.constraint_dict["agent1"].vertex_constraints.add(mvc)
+        #mvc = VertexConstraint(-1,Location(2,2))
+        #start.constraint_dict["agent1"].vertex_constraints.add(mvc)
 
         start.solution = self.env.compute_solution()
         if not start.solution:
@@ -386,7 +457,7 @@ def main():
     vertices_with_name = [] #list of tuple
     for item in vertices_yaml:
         vertices.append((item[0],item[1]))
-        vertices_with_name.append(((item[0],item[1]),item[2]))
+        vertices_with_name.append(((item[0],item[1]),item[2],item[3]))
 
     obstacles = []
     agents = param['agents']
@@ -403,6 +474,8 @@ def main():
     env.vertices_with_name = vertices_with_name
     env.edges_dict = edges_dict
 
+    #node class list
+    env.node_list = to_node_list(vertices_with_name)
 
     # Searching
     cbs = CBS(env)
