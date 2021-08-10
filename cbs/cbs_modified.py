@@ -3,6 +3,7 @@
 Python implementation of Conflict-based search
 
 author: Ashwin Bose (@atb033)
+Modifed: Ahn, Jeeho
 
 """
 import sys
@@ -24,20 +25,30 @@ from python_arbi_framework.arbi_agent.agent.arbi_agent import ArbiAgent
 from python_arbi_framework.arbi_agent.configuration import BrokerType
 from python_arbi_framework.arbi_agent.agent import arbi_agent_excutor
 
+import mapElements
+
 class arbiAgent(ArbiAgent):
     def __init__(self):
         super().__init__()
 
     def on_data(self, sender: str, data: str):
         print(self.agent_url + "\t-> receive data : " + data)
-
+    
     def on_request(self, sender: str, request: str) -> str:
         print(self.agent_url + "\t-> receive request : " + request)
         return "(request ok)"
-
+    
+    """
+    def on_notify(self, content):
+        gl_notify = GLFactory.new_gl_from_gl_string(content)
+    """
     def on_query(self, sender: str, query: str) -> str:
         print(self.agent_url + "\t-> receive query : " + query)
         return "(query ok)"
+
+    def execute(self, broker_url, agent_name, agent, broker_type=2):
+        arbi_agent_excutor.excute(broker_url, agent_name, agent, broker_type)
+        print(agent_name + " ready")
 
 def grid2graph(xy_tuple,g2g_map):
     for v in g2g_map:
@@ -86,6 +97,7 @@ def to_node_list(tuple_list_in):
         out_list.append(node(item))
 
     return out_list
+
 
 class State(object):
     def __init__(self, time, location):
@@ -190,6 +202,26 @@ class Environment(object):
         for n in self.node_list:
             if(n.name == node_name):
                 return n.temp_open
+
+    #Jeeho Edit
+    def solution2NodeNames(self,sol):
+        #solution is a dictionary of lists of agent dictionaries
+        #key: agent_name value: list of {'t','x','y'}
+        out_sol = {}
+        for sol_xy_agent in sol.keys():
+            #for each solution for an agent
+            sol_name_agent = []
+            for cell in sol[sol_xy_agent]:
+                #convert xy to node_name
+                xy_tuple = (cell['x'],cell['y'])
+                matched_name = grid2graph(xy_tuple,self.vertices_with_name)
+                #omitting t
+                sol_name_agent.append(matched_name)
+                
+            out_sol[sol_xy_agent] = sol_name_agent
+        
+        return out_sol
+
 
 
     def get_neighbors(self, state):
@@ -454,21 +486,76 @@ class CBS(object):
             plan[agent] = path_dict_list
         return plan
 
+#globalized mapElements data
+mapElems = mapElements.mapElements()
+
+def planning_loop():
+    print('Waiting for a request')
+    #repeating starts here
+    #get data from server here
+    input()
+    #agents -> list of dictionaries
+    #['start'],['goal'] = list, ['name'] = str
+    agents_in = []
+    #add agents as below
+    #agents_in.append({'start':[0,0], 'goal':[1,1], 'name':'agent_new'})
+
+    #wait and get agents from server, do the job, then repeat
+    #assume agents info is received
+    agents_in.append({'start':[3,1], 'goal':[9,0], 'name':'agent0'})
+    agents_in.append({'start':[6,1], 'goal':[3,3], 'name':'agent1'})
+
+    #initialize env
+    env = Environment(mapElems.dimension, agents_in, mapElems.obstacles)
+    env.vertices_with_name = mapElems.vertices_with_name
+    env.edges_dict = mapElems.edges_dict
+    #Jeeho Edit
+    #node class list
+    env.node_list = to_node_list(mapElems.vertices_with_name)
+    
+    # Searching
+    cbs = CBS(env)
+    start = time.time()
+    solution = cbs.search()
+    end = time.time()
+    print(end - start)
+    if not solution:
+        print(" Solution not found" )
+        return
+
+    """
+    # Write to output file
+    with open(args.output, 'r') as output_yaml:
+        try:
+            output = yaml.load(output_yaml, Loader=yaml.FullLoader)
+        except yaml.YAMLError as exc:
+            print(exc)
+
+    output["schedule"] = solution
+    output["cost"] = env.compute_solution_cost(solution)
+    with open(args.output, 'w') as output_yaml:
+        yaml.safe_dump(output, output_yaml)
+    """
+
+    #Jeeho Edit
+    #convert resulting path to node names
+    sol_in_node_name = env.solution2NodeNames(solution)
+    print(sol_in_node_name)
+
+    #send through ARBI
+    return sol_in_node_name
+    #repeating ends here
+
 
 def main():
     #Initialize Arbi Client Agent
     broker_url = "tcp://127.0.0.1:61616"
-
-    sender_agent = TestAgent()
-    sender_agent_name = "agent://www.arbi.com/SenderAgent"
-    arbi_agent_excutor.excute(broker_url, agent_name=sender_agent_name, agent=sender_agent, broker_type=2)
-    print("sender agent ready")
-
-    receiver_agent = TestAgent()
-    receiver_agent_name = "agent://www.arbi.com/ReceiverAgent"
-    arbi_agent_excutor.excute(broker_url, agent_name=receiver_agent_name, agent=receiver_agent, broker_type=2)
-    print("receiver agent ready")
-
+    
+    #start an agent
+    sender_agent = arbiAgent()
+    sender_agent_name = "agent://www.arbi.com/MAPFagent"
+    arbi_agent_excutor.excute(broker_url, sender_agent_name, sender_agent, broker_type=2)
+    
 
     parser = argparse.ArgumentParser()
     parser.add_argument("param", help="input file containing map and obstacles")
@@ -504,65 +591,23 @@ def main():
     #parse edges
     edges_dict = mapParser.MapMOS("map_parse/map_cloud.txt").Edge
 
+    #initialize Map Elements data
+    global mapElems
+    mapElems = mapElements.mapElements(dimension,obstacles,vertices_with_name,edges_dict)
+    
+
     #Jeeho Comment
     #Need to wrap from here so we can setup new env before start searching
     #currently predefined map construction may need to be modified to be done automatically
     #from server data
     #Environment should be re-initialized with modified agents
 
-    
-
     while(1):
-        #repeating starts here
-        #get data from server here
-        input()
-        #agents -> list of dictionaries
-        #['start'],['goal'] = list, ['name'] = str
-        agents_in = []
-        #add agents as below
-        #agents_in.append({'start':[0,0], 'goal':[1,1], 'name':'agent_new'})
-
-        #wait and get agents from server, do the job, then repeat
-        #assume agents info is received
-        agents_in.append({'start':[3,1], 'goal':[9,0], 'name':'agent0'})
-        agents_in.append({'start':[6,1], 'goal':[3,3], 'name':'agent1'})
-
-        #initialize env
-        env = Environment(dimension, agents_in, obstacles)
-        env.vertices_with_name = vertices_with_name
-        env.edges_dict = edges_dict
-        #Jeeho Edit
-        #node class list
-        env.node_list = to_node_list(vertices_with_name)
-        
-
-        # Searching
-        cbs = CBS(env)
-        start = time.time()
-        solution = cbs.search()
-        end = time.time()
-        print(end - start)
-        if not solution:
-            print(" Solution not found" )
-            return
-
-        # Write to output file
-        with open(args.output, 'r') as output_yaml:
-            try:
-                output = yaml.load(output_yaml, Loader=yaml.FullLoader)
-            except yaml.YAMLError as exc:
-                print(exc)
-
-        output["schedule"] = solution
-        output["cost"] = env.compute_solution_cost(solution)
-        with open(args.output, 'w') as output_yaml:
-            yaml.safe_dump(output, output_yaml)
-
-        #repeating ends here
+       # planResult = planning_loop()
+       time.sleep(3)
 
     #close arbi agent
     sender_agent.close()
-    receiver_agent.close()
 
 
 if __name__ == "__main__":

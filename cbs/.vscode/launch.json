@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["input_inv.yaml","output.yaml"]
+            "args": ["input_inv2.yaml","output.yaml"]
         }
     ]
 }
