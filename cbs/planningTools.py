@@ -1,5 +1,6 @@
 import sys
-sys.path.insert(0, '../')
+#sys.path.insert(0, '../')
+sys.path.insert(0, './deps')
 import argparse
 import yaml
 from math import fabs

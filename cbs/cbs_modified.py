@@ -1,6 +1,5 @@
 """
 Python implementation of Conflict-based search
-
 author: Ashwin Bose (@atb033)
 Modifed: Ahn, Jeeho
 """
