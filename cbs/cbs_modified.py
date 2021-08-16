@@ -11,27 +11,97 @@ import yaml
 from map_parse import MapMOS as mapParser
 import time
 import mapElements
-import a_agent
+#import a_agent
 import planningTools as pt
+
+
+from python_arbi_framework.arbi_agent.agent.arbi_agent import ArbiAgent
+from python_arbi_framework.arbi_agent.configuration import BrokerType
+from python_arbi_framework.arbi_agent.agent import arbi_agent_excutor
+
+robot_path_delim = ':'
+robot_robot_delim = ';'
+path_path_delim = '-'
+
+class aAgent(ArbiAgent):
+    def __init__(self, agent_name, broker_url = "tcp://127.0.0.1:61616"):
+        super().__init__()
+        self.broker_url = broker_url
+        self.agent_name = agent_name
+        #self.agent_url = agent_url
+
+    def on_data(self, sender: str, data: str):
+        print(self.agent_url + "\t-> receive data : " + data)
+    
+    def on_request(self, sender: str, request: str) -> str:
+        print(self.agent_url + "\t-> receive request : " + request)
+        return handleReqest(request)
+        #return "(request ok)"
+    
+    """
+    def on_notify(self, content):
+        gl_notify = GLFactory.new_gl_from_gl_string(content)
+    """
+    def on_query(self, sender: str, query: str) -> str:
+        print(self.agent_url + "\t-> receive query : " + query)
+        #print(query)
+        return handleReqest(query)
+
+    def execute(self, broker_type=2):
+        arbi_agent_excutor.excute(self.broker_url, self.agent_name, self, broker_type)
+        print(self.agent_name + " ready")
+
+
 
 #globalized mapElements data
 mapElems = mapElements.mapElements()
 
-def planning_loop():
-    print('Waiting for a request')
+def handleReqest(msg):
+    handle_start = time.time()
+    print(msg)
+    # name1,start1,goal1;name2,start2,goal2, ...
+    agentsList = []
+    byRobots = msg.split(robot_robot_delim)
+    for r in byRobots:
+        elems = r.split(robot_path_delim)
+        #convert node name to map index coord.
+        start_xy = pt.graph2grid(elems[1],vertices_with_name)
+        goal_xy = pt.graph2grid(elems[2],vertices_with_name)
+        agentsList.append({'start':[start_xy[0],start_xy[1]], 'goal':[goal_xy[0],goal_xy[1]], 'name':elems[0]})
+
+    planResult = planning_loop(agentsList)
+
+    #serialize in string
+    msgs_by_agent = []
+    for key in planResult:
+        msg = key + robot_path_delim + path_path_delim.join(planResult[key])
+        msgs_by_agent.append(msg)
+
+    out_msg = robot_robot_delim.join(msgs_by_agent)
+    handle_end = time.time()
+    print("Event Hander spent: " + str(handle_end-handle_start) + " seconds")
+    return out_msg
+
+        
+
+
+
+def planning_loop(agents_in):
+    loop_start = time.time()
+    #print('Waiting for a request')
     #repeating starts here
     #get data from server here
-    input()
+    #input()
     #agents -> list of dictionaries
     #['start'],['goal'] = list, ['name'] = str
-    agents_in = []
+    #agents_in = []
     #add agents as below
     #agents_in.append({'start':[0,0], 'goal':[1,1], 'name':'agent_new'})
 
     #wait and get agents from server, do the job, then repeat
     #assume agents info is received
-    agents_in.append({'start':[3,1], 'goal':[9,0], 'name':'agent0'})
-    agents_in.append({'start':[6,1], 'goal':[3,3], 'name':'agent1'})
+    #agents_in.append({'start':[3,1], 'goal':[9,0], 'name':'agent0'})
+    #agents_in.append({'start':[6,1], 'goal':[3,3], 'name':'agent1'})
 
     #initialize env
     env = pt.Environment(mapElems.dimension, agents_in, mapElems.obstacles)
@@ -71,6 +141,8 @@ def planning_loop():
     print(sol_in_node_name)
 
     #send through ARBI
+    loop_end = time.time()
+    print("Planning Loope took: " + str(loop_end - loop_start) + " seconds")
     return sol_in_node_name
     #repeating ends here
 
@@ -78,10 +150,10 @@ def planning_loop():
 def main():
     #Initialize Arbi Client Agent
     #start an agent
-    arbiAgent = a_agent.aAgent(agent_name="agent://www.arbi.com/MAPFagent")
+    arbiAgent = aAgent(agent_name="agent://www.arbi.com/MAPFagent")
     arbiAgent.execute()
 
-    arbiAgent.send("agent://www.arbi.com/receiveTest","Hi Bmo");
+    #arbiAgent.send("agent://www.arbi.com/receiveTest","Hi Bmo");
     
     parser = argparse.ArgumentParser()
     parser.add_argument("param", help="input file containing map and obstacles")
@@ -99,6 +171,7 @@ def main():
     #obstacles = param["map"]["obstacles"]
     vertices_yaml = param["map"]["vertices"] #list
     vertices = []
+    global vertices_with_name
     vertices_with_name = [] #list of tuple
     for item in vertices_yaml:
         vertices.append((item[0],item[1]))
@@ -127,8 +200,8 @@ def main():
     #Environment should be re-initialized with modified agents
 
     while(1):
-       planResult = planning_loop()
-       time.sleep(2)
+    #   planResult = planning_loop()
+       time.sleep(0.01)
 
     #close arbi agent
     arbiAgent.close()
