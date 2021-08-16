@@ -10,6 +10,7 @@ from copy import deepcopy
 from a_star import AStar
 import time
 import mapElements
+import printInColor as pic
 
 def grid2graph(xy_tuple,g2g_map):
     for v in g2g_map:
@@ -418,7 +419,7 @@ class CBS(object):
             self.env.constraint_dict = P.constraint_dict
             conflict_dict = self.env.get_first_conflict(P.solution)
             if not conflict_dict:
-                print("solution found")
+                pic.printC("solution found",'green')
 
                 return self.generate_plan(P.solution)
 

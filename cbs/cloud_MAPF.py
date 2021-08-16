@@ -3,8 +3,9 @@ Python implementation of Conflict-based search
 author: Ashwin Bose (@atb033)
 Modifed: Ahn, Jeeho
 """
+from os import getresgid
 import sys
-sys.path.insert(0, '../')
+#sys.path.insert(0, '../')
 import argparse
 import yaml
 #Dr. Oh Map Parse Tool
@@ -13,6 +14,7 @@ import time
 import mapElements
 #import a_agent
 import planningTools as pt
+import printInColor as pic
 
 
 from python_arbi_framework.arbi_agent.agent.arbi_agent import ArbiAgent
@@ -79,7 +81,7 @@ def handleReqest(msg):
 
     out_msg = robot_robot_delim.join(msgs_by_agent)
     handle_end = time.time()
-    print("Event Hander spent: " + str(handle_end-handle_start) + " seconds")
+    pic.printC("Event Hander spent: " + str(handle_end-handle_start) + " seconds", Warning)
     return out_msg
 
         
@@ -118,7 +120,7 @@ def planning_loop(agents_in):
     end = time.time()
     print(end - start)
     if not solution:
-        print(" Solution not found" )
+        pic.printC(" Solution not found",Warning)
         return
 
     """
@@ -142,7 +144,7 @@ def planning_loop(agents_in):
 
     #send through ARBI
     loop_end = time.time()
-    print("Planning Loope took: " + str(loop_end - loop_start) + " seconds")
+    pic.printC("Planning Loop took: " + str(loop_end - loop_start) + " seconds",'green')
     return sol_in_node_name
     #repeating ends here
 
