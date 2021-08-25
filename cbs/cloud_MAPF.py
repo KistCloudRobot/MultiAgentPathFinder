@@ -3,7 +3,7 @@ Python implementation of Conflict-based search
 author: Ashwin Bose (@atb033)
 Modifed: Ahn, Jeeho
 """
-from os import getresgid
+from os import getresgid, path
 import sys
 #sys.path.insert(0, '../')
 import argparse
@@ -20,10 +20,13 @@ import printInColor as pic
 from python_arbi_framework.arbi_agent.agent.arbi_agent import ArbiAgent
 from python_arbi_framework.arbi_agent.configuration import BrokerType
 from python_arbi_framework.arbi_agent.agent import arbi_agent_excutor
+from arbi_agent.model import generalized_list_factory as GLFactory
 
 robot_path_delim = ':'
 robot_robot_delim = ';'
 path_path_delim = '-'
+
+arbiMAPF = "agent://www.arbi.com/MAPF"
 
 class aAgent(ArbiAgent):
     def __init__(self, agent_name, broker_url = "tcp://127.0.0.1:61616"):
@@ -58,9 +61,52 @@ class aAgent(ArbiAgent):
 #globalized mapElements data
 mapElems = mapElements.mapElements()
 
-def handleReqest(msg):
+def msg2arbi(msg, header="MultiRobotPath", pathHeader = "RobotPath", singlePathHeader = "path"):
+    # result = agent1:219-220-221-222-223-224-225-15
+    # (MultiRobotPath (RobotPath $robot_id (path $v_id1 $v_id2 $v_id3, ...)), …)
+    out_msg = "(" + header + " "
+    pathList = []
+    msgList = msg.split(robot_robot_delim)
+    for r in msgList:
+        name_node = r.split(robot_path_delim)
+        nodes = name_node[1].split(path_path_delim)
+        resultPath = "(" + singlePathHeader + " " + " ".join(nodes) + ")"
+        pathList.append('(' + pathHeader + " " + "\"" + name_node[0] + "\" " + resultPath + ')')
+    
+    out_msg += " ".join(pathList)
+    out_msg += ')'
+
+    return out_msg
+
+
+def arbi2msg(arbi_msg):    
+    # (MultiRobotPath (RobotPath $robot_id $cur_vertex $goal_id), …)
+    # name1,start1,goal1;name2,start2,goal2, ...
+    gl = GLFactory.new_gl_from_gl_string(arbi_msg)
+    robotSet = []
+    if(gl.get_name() == "MultiRobotPath"):
+        for r in range(gl.get_expression_size()):
+            #(RobotPath $robot_id $cur_vertex $goal_id)
+            rp = str(gl.get_expression(r))
+            #remove paranthesis
+            rp_sp = rp.split('(')
+            rp_sp = rp_sp[1].split(')')[0]
+            #RobotPath $robot_id $cur_vertex $goal_id
+            rp_elems = rp_sp.split(" ")
+            # idx 1~3
+            #remove quotation marks from robot name
+            robot_name_sp = rp_elems[1].split('"')
+            robot_name = robot_name_sp[1]
+            robotSet.append(robot_name+robot_path_delim+rp_elems[2]+robot_path_delim+rp_elems[3])
+
+    return ';'.join(robotSet)
+
+
+def handleReqest(msg_gl):
     handle_start = time.time()
-    print(msg)
+    print(msg_gl)
+    #convert arbi Gl to custom format
+    msg = arbi2msg(msg_gl)
     # name1,start1,goal1;name2,start2,goal2, ...
     agentsList = []
     byRobots = msg.split(robot_robot_delim)
@@ -82,10 +128,11 @@ def handleReqest(msg):
     out_msg = robot_robot_delim.join(msgs_by_agent)
     handle_end = time.time()
     pic.printC("Event Hander spent: " + str(handle_end-handle_start) + " seconds", Warning)
-    return out_msg
 
-        
-
+    #convert to arbi format
+    conv = msg2arbi(out_msg)
+    #return out_msg
+    return conv
 
 
 def planning_loop(agents_in):
@@ -152,22 +199,32 @@ def planning_loop(agents_in):
 def main():
     #Initialize Arbi Client Agent
     #start an agent
-    arbiAgent = aAgent(agent_name="agent://www.arbi.com/MAPFagent")
+    arbiAgent = aAgent(agent_name=arbiMAPF)
     arbiAgent.execute()
 
     #arbiAgent.send("agent://www.arbi.com/receiveTest","Hi Bmo");
     
-    parser = argparse.ArgumentParser()
-    parser.add_argument("param", help="input file containing map and obstacles")
-    parser.add_argument("output", help="output file with the schedule")
-    args = parser.parse_args()
+    #parser = argparse.ArgumentParser()
+    #parser.add_argument("param", help="input file containing map and obstacles")
+    #parser.add_argument("output", help="output file with the schedule")
+    #args = parser.parse_args()
+
+    args = {"param":"input.yaml","output":"output.yaml"}
 
     # Read from input file
+    """
     with open(args.param, 'r') as param_file:
         try:
             param = yaml.load(param_file, Loader=yaml.FullLoader)
         except yaml.YAMLError as exc:
             print(exc)
+    """
+    with open(args['param'], 'r') as arg:
+        try:
+            param = yaml.load(arg, Loader=yaml.FullLoader)
+        except yaml.YAMLError as exc:
+            print(exc)
+
 
     dimension = param["map"]["dimensions"]
     #obstacles = param["map"]["obstacles"]
