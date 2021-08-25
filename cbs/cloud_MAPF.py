@@ -66,12 +66,13 @@ def msg2arbi(msg, header="MultiRobotPath", pathHeader = "RobotPath", singlePathH
     # (MultiRobotPath (RobotPath $robot_id (path $v_id1 $v_id2 $v_id3, ...)), …)
     out_msg = "(" + header + " "
     pathList = []
-    msgList = msg.split(robot_robot_delim)
-    for r in msgList:
-        name_node = r.split(robot_path_delim)
-        nodes = name_node[1].split(path_path_delim)
-        resultPath = "(" + singlePathHeader + " " + " ".join(nodes) + ")"
-        pathList.append('(' + pathHeader + " " + "\"" + name_node[0] + "\" " + resultPath + ')')
+    if(len(msg)>0):        
+        msgList = msg.split(robot_robot_delim)
+        for r in msgList:
+            name_node = r.split(robot_path_delim)
+            nodes = name_node[1].split(path_path_delim)
+            resultPath = "(" + singlePathHeader + " " + " ".join(nodes) + ")"
+            pathList.append('(' + pathHeader + " " + "\"" + name_node[0] + "\" " + resultPath + ')')
     
     out_msg += " ".join(pathList)
     out_msg += ')'
@@ -121,9 +122,10 @@ def handleReqest(msg_gl):
 
     #serialize in string
     msgs_by_agent = []
-    for key in planResult:
-        msg = key + robot_path_delim + path_path_delim.join(planResult[key])
-        msgs_by_agent.append(msg)
+    if(planResult != -1): #if not failed
+        for key in planResult:
+            msg = key + robot_path_delim + path_path_delim.join(planResult[key])
+            msgs_by_agent.append(msg)
 
     out_msg = robot_robot_delim.join(msgs_by_agent)
     handle_end = time.time()
@@ -167,8 +169,8 @@ def planning_loop(agents_in):
     end = time.time()
     print(end - start)
     if not solution:
-        pic.printC(" Solution not found",Warning)
-        return
+        pic.printC(" Solution not found",'warning')
+        return -1
 
     """
     # Write to output file

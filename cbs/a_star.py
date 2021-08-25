@@ -12,6 +12,7 @@ class AStar():
         self.admissible_heuristic = env.admissible_heuristic
         self.is_at_goal = env.is_at_goal
         self.get_neighbors = env.get_neighbors
+        self.env = env
 
     def reconstruct_path(self, came_from, current):
         total_path = [current]
@@ -39,7 +40,12 @@ class AStar():
 
         f_score[initial_state] = self.admissible_heuristic(initial_state, agent_name)
 
+        n_lim = self.env.dimension[0]*self.env.dimension[1]
+        n_count = 0
         while open_set:
+            n_count += 1
+            if(n_count > n_lim): #consider failed
+                break;
             temp_dict = {open_item:f_score.setdefault(open_item, float("inf")) for open_item in open_set}
             current = min(temp_dict, key=temp_dict.get)
 
