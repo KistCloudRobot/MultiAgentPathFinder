@@ -11,10 +11,10 @@ import yaml
 #Dr. Oh Map Parse Tool
 from map_parse import MapMOS as mapParser
 import time
-import mapElements
+import deps.mapElements as mapElements
 #import a_agent
-import planningTools as pt
-import printInColor as pic
+import deps.planningTools as pt
+import deps.printInColor as pic
 
 
 from python_arbi_framework.arbi_agent.agent.arbi_agent import ArbiAgent
@@ -211,7 +211,7 @@ def main():
     #parser.add_argument("output", help="output file with the schedule")
     #args = parser.parse_args()
 
-    args = {"param":"input.yaml","output":"output.yaml"}
+    args = {"param":"yaml/input.yaml","output":"yaml/output.yaml"}
 
     # Read from input file
     """
