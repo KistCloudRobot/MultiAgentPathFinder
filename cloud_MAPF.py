@@ -28,6 +28,9 @@ path_path_delim = '-'
 
 arbiMAPF = "agent://www.arbi.com/MAPF"
 
+args = {"param":"yaml/input.yaml","output":"yaml/output.yaml"}
+
+
 class aAgent(ArbiAgent):
     def __init__(self, agent_name, broker_url = "tcp://127.0.0.1:61616"):
         super().__init__()
@@ -42,11 +45,7 @@ class aAgent(ArbiAgent):
         print(self.agent_url + "\t-> receive request : " + request)
         return handleReqest(request)
         #return "(request ok)"
-    
-    """
-    def on_notify(self, content):
-        gl_notify = GLFactory.new_gl_from_gl_string(content)
-    """
+
     def on_query(self, sender: str, query: str) -> str:
         print(self.agent_url + "\t-> receive query : " + query)
         #print(query)
@@ -172,9 +171,9 @@ def planning_loop(agents_in):
         pic.printC(" Solution not found",'warning')
         return -1
 
-    """
     # Write to output file
-    with open(args.output, 'r') as output_yaml:
+
+    with open(args['output'], 'r') as output_yaml:
         try:
             output = yaml.load(output_yaml, Loader=yaml.FullLoader)
         except yaml.YAMLError as exc:
@@ -182,9 +181,8 @@ def planning_loop(agents_in):
 
     output["schedule"] = solution
     output["cost"] = env.compute_solution_cost(solution)
-    with open(args.output, 'w') as output_yaml:
+    with open(args['output'], 'w') as output_yaml:
         yaml.safe_dump(output, output_yaml)
-    """
 
     #Jeeho Edit
     #convert resulting path to node names
@@ -201,8 +199,8 @@ def planning_loop(agents_in):
 def main():
     #Initialize Arbi Client Agent
     #start an agent
-    arbiAgent = aAgent(agent_name=arbiMAPF)
-    arbiAgent.execute()
+   # arbiAgent = aAgent(agent_name=arbiMAPF)
+   # arbiAgent.execute()
 
     #arbiAgent.send("agent://www.arbi.com/receiveTest","Hi Bmo");
     
@@ -211,16 +209,9 @@ def main():
     #parser.add_argument("output", help="output file with the schedule")
     #args = parser.parse_args()
 
-    args = {"param":"yaml/input.yaml","output":"yaml/output.yaml"}
+    
 
     # Read from input file
-    """
-    with open(args.param, 'r') as param_file:
-        try:
-            param = yaml.load(param_file, Loader=yaml.FullLoader)
-        except yaml.YAMLError as exc:
-            print(exc)
-    """
     with open(args['param'], 'r') as arg:
         try:
             param = yaml.load(arg, Loader=yaml.FullLoader)
@@ -259,6 +250,16 @@ def main():
     #currently predefined map construction may need to be modified to be done automatically
     #from server data
     #Environment should be re-initialized with modified agents
+
+    agents_in = []
+    #add agents as below
+    #agents_in.append({'start':[0,0], 'goal':[1,1], 'name':'agent_new'})
+
+    #wait and get agents from server, do the job, then repeat
+    #assume agents info is received
+    agents_in.append({'start':[3,1], 'goal':[9,1], 'name':'agent0'})
+    agents_in.append({'start':[9,2], 'goal':[5,1], 'name':'agent1'})
+    planning_loop(agents_in)
 
     while(1):
     #   planResult = planning_loop()
