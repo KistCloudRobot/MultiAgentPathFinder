@@ -50,7 +50,7 @@ class Animation:
     self.patches.append(Rectangle((xmin, ymin), xmax - xmin, ymax - ymin, facecolor='none', edgecolor='red'))
     for o in map["map"]["obstacles"]:
       x, y = o[0], o[1]
-      self.patches.append(Rectangle((x - 0.5, y - 0.5), 1, 1, facecolor='red', edgecolor='red'))
+      self.patches.append(Rectangle((x - 0.5, y - 0.5), 1, 1, facecolor='grey', edgecolor='grey'))
 
     #fill stations
     for s in map["map"]["stations"]:
@@ -173,7 +173,7 @@ if __name__ == "__main__":
   vertices_with_name = [] #list of tuple
   for item in vertices_yaml:
       vertices.append((item[0],item[1]))
-      vertices_with_name.append(((item[0],item[1]),item[2]))
+      vertices_with_name.append(((item[0],item[1]),item[2],item[3]))
 
   #add obstacles
   obstacles = []
@@ -187,16 +187,16 @@ if __name__ == "__main__":
   #add stations for visualization purpose
   stations =[]
   for v in vertices_with_name:
-    if int(v[1]) < 20:
+    if v[2]=='station':
       stations.append(v[0])
 
   map["map"]["stations"] = stations
 
   #add lift for visualization purpose
   lifts = []
-  for v in vertices_with_name:
-    if int(v[1]) > 20 and int(v[1]) < 30:
-      lifts.append(v[0])
+  #for v in vertices_with_name:
+  #  if int(v[1]) > 20 and int(v[1]) < 30:
+  #    lifts.append(v[0])
 
   map["map"]["lifts"] = lifts
 
