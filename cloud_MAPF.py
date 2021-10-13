@@ -172,9 +172,9 @@ def planning_loop(agents_in):
         pic.printC(" Solution not found",'warning')
         return -1
 
-    """
+    
     # Write to output file
-    with open(args.output, 'r') as output_yaml:
+    with open('yaml/output.yaml', 'r') as output_yaml:
         try:
             output = yaml.load(output_yaml, Loader=yaml.FullLoader)
         except yaml.YAMLError as exc:
@@ -182,9 +182,9 @@ def planning_loop(agents_in):
 
     output["schedule"] = solution
     output["cost"] = env.compute_solution_cost(solution)
-    with open(args.output, 'w') as output_yaml:
+    with open('yaml/output.yaml', 'w') as output_yaml:
         yaml.safe_dump(output, output_yaml)
-    """
+    
 
     #Jeeho Edit
     #convert resulting path to node names
@@ -259,6 +259,9 @@ def main():
     #currently predefined map construction may need to be modified to be done automatically
     #from server data
     #Environment should be re-initialized with modified agents
+
+
+    planning_loop(agents)
 
     while(1):
     #   planResult = planning_loop()
