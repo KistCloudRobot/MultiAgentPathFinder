@@ -56,35 +56,35 @@ Vertex
 Vertex
 	name 216
 	type 0
-	pos 150.1 0.0 158.1
+	pos 149.9 0.0 158.1
 	edge 215
 	edge 228
 	edge 217
 Vertex
 	name 218
 	type 0
-	pos 150.1 0.0 160.7
+	pos 149.9 0.0 160.7
 	edge 11
 	edge 217
 	edge 219
 Vertex
 	name 219
 	type 0
-	pos 150.1 0.0 162.2
+	pos 149.9 0.0 162.2
 	edge 220
 	edge 12
 	edge 218
 Vertex
 	name 220
 	type 0
-	pos 150.1 0.0 163.7
+	pos 149.9 0.0 163.7
 	edge 221
 	edge 13
 	edge 219
 Vertex
 	name 221
 	type 0
-	pos 150.1 0.0 165.1
+	pos 149.9 0.0 165.1
 	edge 222
 	edge 220
 	edge 14
@@ -119,8 +119,8 @@ Vertex
 Vertex
 	name 104
 	type 2
-	pos 156.161 0.0 151.4
-	edge 204
+	pos 156.7 0.0 151.3
+	edge 404
 Vertex
 	name 1
 	type 1
@@ -214,7 +214,7 @@ Vertex
 Vertex
 	name 101
 	type 2
-	pos 146.7 0.0 151.4
+	pos 146.9 0.0 151.4
 	edge 201
 Vertex
 	name 102
@@ -224,12 +224,12 @@ Vertex
 Vertex
 	name 103
 	type 2
-	pos 153.672 0.0 151.414
-	edge 203
+	pos 153.4 0.0 151.4
+	edge 403
 Vertex
 	name 201
 	type 0
-	pos 146.7 0.0 152.9
+	pos 146.9 0.0 152.9
 	edge 213
 	edge 101
 Vertex
@@ -243,18 +243,18 @@ Vertex
 	type 0
 	pos 153.701 0.0 152.635
 	edge 231
-	edge 103
+	edge 403
 Vertex
 	name 230
 	type 0
-	pos 155.6 0.0 155.076
+	pos 155.646 0.0 155.15
 	edge 233
 	edge 232
 	edge 231
 Vertex
 	name 232
 	type 0
-	pos 156.232 0.0 155.076
+	pos 156.4 0.0 155.1
 	edge 230
 	edge 204
 Vertex
@@ -290,7 +290,7 @@ Vertex
 Vertex
 	name 217
 	type 0
-	pos 150.1 0.0 159.3
+	pos 149.9 0.0 159.3
 	edge 218
 	edge 216
 Vertex
@@ -315,13 +315,13 @@ Vertex
 Vertex
 	name 204
 	type 0
-	pos 156.232 0.0 152.67
+	pos 156.4 0.0 152.6
 	edge 232
-	edge 104
+	edge 404
 Vertex
 	name 222
 	type 0
-	pos 150.1 0.0 166.6
+	pos 149.9 0.0 166.6
 	edge 221
 	edge 15
 	edge 223
@@ -334,14 +334,14 @@ Vertex
 Vertex
 	name 215
 	type 0
-	pos 150.1 0.0 155.1
+	pos 149.9 0.0 155.1
 	edge 227
 	edge 213
 	edge 216
 Vertex
 	name 228
 	type 0
-	pos 150.7 0.0 158.1
+	pos 150.5 0.0 158.1
 	edge 22
 	edge 216
 Vertex
@@ -365,10 +365,22 @@ Vertex
 Vertex
 	name 213
 	type 0
-	pos 146.7 0.0 155.1
+	pos 146.9 0.0 155.1
 	edge 201
 	edge 215
 	edge 205
+Vertex
+	name 403
+	type 0
+	pos 153.672 0.0 151.414
+	edge 203
+	edge 103
+Vertex
+	name 404
+	type 0
+	pos 156.5 0.0 151.3
+	edge 204
+	edge 104
 Vertex
 	name 302
 	type 0

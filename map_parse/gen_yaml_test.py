@@ -2,19 +2,25 @@ import pandas as pd
 from styleframe import StyleFrame, utils
 
 def is_cell_station(cell):
-    if cell.style.bg_color == 'ffd966':
+    if cell.style.bg_color == 'ffd966' or cell.style.bg_color == 'FFFFD966': #station
         return True
+    
+    elif cell.style.bg_color == 'bcd6ee' or cell.style.bg_color == 'FF9DC3E6': #charge station
+        return True
+
     else:
         return False
 
-sf = StyleFrame.read_excel("cloudMap_v07.xlsx", read_style=True)
+excel_file = "cloudMap_v08.xlsx"
+
+sf = StyleFrame.read_excel(excel_file, read_style=True)
 #print(sf)
 
-print(is_cell_station(sf[4][0]))
+print(is_cell_station(sf[0][8]))
 
 print('------------------------------------')
 
-df = pd.read_excel("cloudMap_v07.xlsx")
+df = pd.read_excel(excel_file)
 
 print(df)
 

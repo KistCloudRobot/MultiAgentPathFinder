@@ -8,12 +8,10 @@ agents:
 map:
     dimensions: [13, 12]
     vertices:
-    - !!python/tuple [0,1,"102","node"]
-    - !!python/tuple [0,3,"101","node"]
-    - !!python/tuple [0,7,"104","node"]
-    - !!python/tuple [0,8,"404","node"]
-    - !!python/tuple [0,10,"403","node"]
-    - !!python/tuple [0,11,"103","node"]
+    - !!python/tuple [0,1,"102","station"]
+    - !!python/tuple [0,3,"101","station"]
+    - !!python/tuple [0,8,"104","station"]
+    - !!python/tuple [0,10,"103","station"]
     - !!python/tuple [1,1,"202","node"]
     - !!python/tuple [1,3,"201","node"]
     - !!python/tuple [1,8,"204","node"]
@@ -77,19 +75,3 @@ map:
     - !!python/tuple [11,3,"225","node"]
     - !!python/tuple [12,2,"19","station"]
     - !!python/tuple [12,3,"18","station"]
-
-
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-

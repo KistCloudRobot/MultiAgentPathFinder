@@ -199,10 +199,10 @@ def planning_loop(agents_in):
 def main():
     #Initialize Arbi Client Agent
     #start an agent
-   # arbiAgent = aAgent(agent_name=arbiMAPF)
-   # arbiAgent.execute()
+    arbiAgent = aAgent(agent_name=arbiMAPF)
+    arbiAgent.execute()
 
-    #arbiAgent.send("agent://www.arbi.com/receiveTest","Hi Bmo");
+    arbiAgent.send("agent://www.arbi.com/receiveTest","Hi Bmo");
     
     #parser = argparse.ArgumentParser()
     #parser.add_argument("param", help="input file containing map and obstacles")
@@ -257,9 +257,9 @@ def main():
 
     #wait and get agents from server, do the job, then repeat
     #assume agents info is received
-    agents_in.append({'start':[3,1], 'goal':[9,1], 'name':'agent0'})
-    agents_in.append({'start':[9,2], 'goal':[5,1], 'name':'agent1'})
-    planning_loop(agents_in)
+    #agents_in.append({'start':[3,1], 'goal':[9,1], 'name':'agent0'})
+    #agents_in.append({'start':[9,2], 'goal':[5,1], 'name':'agent1'})
+    #planning_loop(agents_in)
 
     while(1):
     #   planResult = planning_loop()
