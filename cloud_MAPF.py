@@ -3,7 +3,7 @@ Python implementation of Conflict-based search
 author: Ashwin Bose (@atb033)
 Modifed: Ahn, Jeeho
 """
-from os import getresgid, path
+#from os import getresgid, path
 import sys
 #sys.path.insert(0, '../')
 import argparse
@@ -16,12 +16,12 @@ import deps.mapElements as mapElements
 import deps.planningTools as pt
 import deps.printInColor as pic
 
-
+""""
 from python_arbi_framework.arbi_agent.agent.arbi_agent import ArbiAgent
 from python_arbi_framework.arbi_agent.configuration import BrokerType
 from python_arbi_framework.arbi_agent.agent import arbi_agent_excutor
 from arbi_agent.model import generalized_list_factory as GLFactory
-
+"""
 robot_path_delim = ':'
 robot_robot_delim = ';'
 path_path_delim = '-'
@@ -30,7 +30,7 @@ arbiMAPF = "agent://www.arbi.com/MAPF"
 
 args = {"param":"yaml/input.yaml","output":"yaml/output.yaml"}
 
-
+"""
 class aAgent(ArbiAgent):
     def __init__(self, agent_name, broker_url = "tcp://127.0.0.1:61616"):
         super().__init__()
@@ -54,9 +54,9 @@ class aAgent(ArbiAgent):
     def execute(self, broker_type=2):
         arbi_agent_excutor.excute(self.broker_url, self.agent_name, self, broker_type)
         print(self.agent_name + " ready")
+"""
 
-
-
+"""
 #globalized mapElements data
 mapElems = mapElements.mapElements()
 
@@ -134,7 +134,7 @@ def handleReqest(msg_gl):
     conv = msg2arbi(out_msg)
     #return out_msg
     return conv
-
+"""
 
 def planning_loop(agents_in):
     loop_start = time.time()
@@ -199,10 +199,10 @@ def planning_loop(agents_in):
 def main():
     #Initialize Arbi Client Agent
     #start an agent
-    arbiAgent = aAgent(agent_name=arbiMAPF)
-    arbiAgent.execute()
+    #arbiAgent = aAgent(agent_name=arbiMAPF)
+    #arbiAgent.execute()
 
-    arbiAgent.send("agent://www.arbi.com/receiveTest","Hi Bmo");
+    #arbiAgent.send("agent://www.arbi.com/receiveTest","Hi Bmo");
     
     #parser = argparse.ArgumentParser()
     #parser.add_argument("param", help="input file containing map and obstacles")
@@ -257,16 +257,20 @@ def main():
 
     #wait and get agents from server, do the job, then repeat
     #assume agents info is received
-    #agents_in.append({'start':[3,1], 'goal':[9,1], 'name':'agent0'})
-    #agents_in.append({'start':[9,2], 'goal':[5,1], 'name':'agent1'})
-    #planning_loop(agents_in)
+    a1_start = pt.graph2grid("239",vertices_with_name)
+    a2_start = pt.graph2grid("234",vertices_with_name)
+    a1_goal = pt.graph2grid("230",vertices_with_name)
+    a2_goal = pt.graph2grid("234", vertices_with_name)
+    agents_in.append({'start':a1_start, 'goal':a1_goal, 'name':'agent0'})
+    agents_in.append({'start':a2_start, 'goal':a2_goal, 'name':'agent1'})
+    planning_loop(agents_in)
 
     while(1):
     #   planResult = planning_loop()
        time.sleep(0.01)
 
     #close arbi agent
-    arbiAgent.close()
+    #arbiAgent.close()
 
 
 if __name__ == "__main__":
