@@ -56,6 +56,19 @@ class aAgent(ArbiAgent):
         print(self.agent_name + " ready")
 """
 
+def msg2agentList(msg):
+    # name1,start1,goal1;name2,start2,goal2, ...
+    agentsList = []
+    byRobots = msg.split(robot_robot_delim)
+    for r in byRobots:
+        elems = r.split(robot_path_delim)
+        #convert node name to map index coord.
+        start_xy = pt.graph2grid(elems[1],vertices_with_name)
+        goal_xy = pt.graph2grid(elems[2],vertices_with_name)
+        agentsList.append({'start':[start_xy[0],start_xy[1]], 'goal':[goal_xy[0],goal_xy[1]], 'name':elems[0]})
+
+    return agentsList
+
 """
 #globalized mapElements data
 mapElems = mapElements.mapElements()
@@ -257,12 +270,40 @@ def main():
 
     #wait and get agents from server, do the job, then repeat
     #assume agents info is received
-    a1_start = pt.graph2grid("239",vertices_with_name)
-    a2_start = pt.graph2grid("234",vertices_with_name)
-    a1_goal = pt.graph2grid("230",vertices_with_name)
-    a2_goal = pt.graph2grid("234", vertices_with_name)
-    agents_in.append({'start':a1_start, 'goal':a1_goal, 'name':'agent0'})
-    agents_in.append({'start':a2_start, 'goal':a2_goal, 'name':'agent1'})
+
+    # assume each target is not an obstacle node
+
+    a1 = ["a1","239","230"]
+    a2 = ["a2","234","234"]
+    test_robots = []
+    test_robots.append(a1)
+    test_robots.append(a2)
+
+    #a1_start = pt.graph2grid(a1[0],vertices_with_name)
+    #a2_start = pt.graph2grid(a2[0],vertices_with_name)
+    #a1_goal = pt.graph2grid(a1[1],vertices_with_name)
+    #a2_goal = pt.graph2grid(a2[1], vertices_with_name)
+
+    #agents_in.append({'start':a1_start, 'goal':a1_goal, 'name':'agent0'})
+    #agents_in.append({'start':a2_start, 'goal':a2_goal, 'name':'agent1'})
+    
+    msg_list = []
+    for r in test_robots:
+        msg_list.append(r[0] + robot_path_delim + r[1] + robot_path_delim + r[2])
+
+    msg = robot_robot_delim.join(msg_list)
+    
+    agents_in = msg2agentList(msg)
+
+    # get single-robot path for all robots
+    single_path_dicts={}
+    for robot in agents_in:
+        single_agent = [robot]
+        path = planning_loop(single_agent)
+        single_path_dicts[robot['name']] = path[robot['name']]
+
+    #check if any goal is in any path
+    
     planning_loop(agents_in)
 
     while(1):
