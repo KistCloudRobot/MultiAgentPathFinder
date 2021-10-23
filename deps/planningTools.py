@@ -185,12 +185,29 @@ class Environment(object):
         return out_sol
 
 
+    def get_neighbors_from_node_name_timeless(self, node_name):
+        neighbors = []
+        neighbor_nodes = []
+        if node_name in self.edges_dict:
+            neighbor_nodes = self.edges_dict[node_name]
+        for nn in neighbor_nodes:
+            #Jeeho Edit
+            #get corresponding graph node
+            #add if node, only add if station is temp_open
+            add_verdict = False
+            if(self.get_node_type_by_name(nn)=='node'):
+                add_verdict = True
+            elif(self.get_node_temp_open_by_name(nn) == True):
+                add_verdict = True
+            if(add_verdict):
+                neighbors.append(nn)
+        
+        return neighbors
 
     def get_neighbors(self, state):
         neighbors = []
         neighbor_nodes = []
 
-        
         node_name = grid2graph((state.location.x,state.location.y),self.vertices_with_name)
 
         if node_name in self.edges_dict:
