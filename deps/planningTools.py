@@ -411,7 +411,7 @@ class CBS(object):
         self.env = environment
         self.open_set = set()
         self.closed_set = set()
-    def search(self):
+    def search(self,print_ = True):
         start = HighLevelNode()
         # TODO: Initialize it in a better way
         start.constraint_dict = {}
@@ -436,7 +436,8 @@ class CBS(object):
             self.env.constraint_dict = P.constraint_dict
             conflict_dict = self.env.get_first_conflict(P.solution)
             if not conflict_dict:
-                pic.printC("solution found",'green')
+                if(print_==True):
+                    pic.printC("solution found",'green')
 
                 return self.generate_plan(P.solution)
 

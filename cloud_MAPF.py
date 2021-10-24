@@ -8,6 +8,7 @@ import sys
 import copy
 #sys.path.insert(0, '../')
 import argparse
+from typing import AsyncGenerator
 import yaml
 #Dr. Oh Map Parse Tool
 from map_parse import MapMOS as mapParser
@@ -17,12 +18,15 @@ import deps.mapElements as mapElements
 import deps.planningTools as pt
 import deps.printInColor as pic
 
-""""
+#use arbi
+"""
 from python_arbi_framework.arbi_agent.agent.arbi_agent import ArbiAgent
 from python_arbi_framework.arbi_agent.configuration import BrokerType
 from python_arbi_framework.arbi_agent.agent import arbi_agent_excutor
 from arbi_agent.model import generalized_list_factory as GLFactory
 """
+#use arbi end
+
 robot_path_delim = ':'
 robot_robot_delim = ';'
 path_path_delim = '-'
@@ -42,6 +46,7 @@ class overlap_robots:
         self.other_robots_list = other_robots_list
         self.this_goal = this_goal
 
+#use arbi
 """
 class aAgent(ArbiAgent):
     def __init__(self, agent_name, broker_url = "tcp://127.0.0.1:61616"):
@@ -67,6 +72,7 @@ class aAgent(ArbiAgent):
         arbi_agent_excutor.excute(self.broker_url, self.agent_name, self, broker_type)
         print(self.agent_name + " ready")
 """
+#use arbi end
 
 def msg2agentList(msg):
     # name1,start1,goal1;name2,start2,goal2, ...
@@ -81,6 +87,7 @@ def msg2agentList(msg):
 
     return agentsList
 
+#use arbi
 """
 #globalized mapElements data
 mapElems = mapElements.mapElements()
@@ -142,7 +149,10 @@ def handleReqest(msg_gl):
         goal_xy = pt.graph2grid(elems[2],vertices_with_name)
         agentsList.append({'start':[start_xy[0],start_xy[1]], 'goal':[goal_xy[0],goal_xy[1]], 'name':elems[0]})
 
-    planResult = planning_loop(agentsList)
+    #planResult = planning_loop(agentsList)
+    planResult = handle_with_exceptions(agentsList)
+    if(planResult == -1):
+        return msg2arbi("failed")
 
     #serialize in string
     msgs_by_agent = []
@@ -160,8 +170,9 @@ def handleReqest(msg_gl):
     #return out_msg
     return conv
 """
+#use arbi end
 
-def planning_loop(agents_in):
+def planning_loop(agents_in,print_result=True):
     loop_start = time.time()
     #print('Waiting for a request')
     #repeating starts here
@@ -189,15 +200,15 @@ def planning_loop(agents_in):
     # Searching
     cbs = pt.CBS(env)
     start = time.time()
-    solution = cbs.search()
+    solution = cbs.search(print_=print_result)
     end = time.time()
-    print(end - start)
+    if(print_result == True):
+        print(end - start)
     if not solution:
         pic.printC(" Solution not found",'warning')
         return -1
 
     # Write to output file
-
     with open(args['output'], 'r') as output_yaml:
         try:
             output = yaml.load(output_yaml, Loader=yaml.FullLoader)
@@ -212,11 +223,13 @@ def planning_loop(agents_in):
     #Jeeho Edit
     #convert resulting path to node names
     sol_in_node_name = env.solution2NodeNames(solution)
-    print(sol_in_node_name)
+    if(print_result==True):
+        print(sol_in_node_name)
 
     #send through ARBI
     loop_end = time.time()
-    pic.printC("Planning Loop took: " + str(loop_end - loop_start) + " seconds",'green')
+    if(print_result==True):
+        pic.printC("Planning Loop took: " + str(loop_end - loop_start) + " seconds",'green')
     return sol_in_node_name
     #repeating ends here
 
@@ -254,10 +267,168 @@ def find_free_node(goal_node, overlap_robots, single_path_dict, edges_dict):
     #failed to find a free node. exit with failure
     return False
 
+def write_to_file(path_dict,arg,vert):   
+    with open(arg['output'], 'r') as output_yaml:
+        try:
+            output = yaml.load(output_yaml, Loader=yaml.FullLoader)
+            output['schedule'] = {}
+            len_list = []
+            for robot in path_dict:
+                #make list of dict
+                list_of_dict = []
+                for d in range(len(path_dict[robot])): #single list path
+                    grid_coord = pt.graph2grid(path_dict[robot][d],vert)
+                    single_dict = {'t':int(d),'x':grid_coord[0],'y':grid_coord[1]}
+                    list_of_dict.append(single_dict)
+                output['schedule'][robot] = list_of_dict
+                len_list.append(len(list_of_dict))
 
+            output['cost'] = max(len_list)
+        except yaml.YAMLError as exc:
+            print(exc)
+
+        with open(args['output'], 'w') as output_yaml:
+            yaml.safe_dump(output, output_yaml)
+
+
+def handle_with_exceptions(agents_in):
+    #initialize env
+    env = pt.Environment(mapElems.dimension, agents_in, mapElems.obstacles)
+    env.vertices_with_name = mapElems.vertices_with_name
+    env.edges_dict = mapElems.edges_dict
+    # get single-robot path for all robots
+    single_path_dicts={}
+    for robot in agents_in:
+        single_agent = [robot]
+        path = planning_loop(single_agent,print_result=False)
+        if(path == -1): #failed to find a path
+            pic.printC("Failed to find a single robot path", 'warning')
+            return -1
+        single_path_dicts[robot['name']] = path[robot['name']]
+
+    #check if any goal is in any path {"robot name":[list of other robots with a path has the goal on]}
+    overlap_goal = {} #dict of string:overlap_robots class
+    for robot in agents_in:
+        goal_node = pt.grid2graph((robot['goal'][0],robot['goal'][1]),env.vertices_with_name)
+        for path_key in single_path_dicts:
+           #skip for itself
+            if path_key is not robot['name']:
+                #add to overlap goal if goal is on someone else's path
+                if goal_node in single_path_dicts[path_key]:
+                    #if there's no key for this robot
+                    if robot['name'] not in overlap_goal:
+                        overlap_ = overlap_robots(robot['name'],[path_key],goal_node)
+                        overlap_goal[robot['name']] = overlap_
+                    #if there's a overlap found previously, append to the list
+                    else:                        
+                        overlap_goal[robot['name']].other_robots_list.append(path_key)
+
+    #see if overlap_goal is empty or not. proceed if empty, do additional handling if not
+    if(bool(overlap_goal)==True): #if not empty (bool(empty dict) == False)
+        finished_agents_path_dict = {}
+        unfinished_agents_path_list_dict = {}
+        remaining_agentList = agents_in
+        while(len(remaining_agentList)>0):
+            mid_goals = {}
+            #expend until a node not on any of the overlapped paths is found for each robot (node to avoid collision)
+            for o in overlap_goal:
+                #find a node to avoid collision
+                free_node = find_free_node(overlap_goal[o].this_goal,overlap_goal[o].other_robots_list,single_path_dicts,env.edges_dict)
+                if free_node is not False: #if a free node is found
+                    #set a temp goals
+                    mid_goals[overlap_goal[o].this_robot] = two_goals(free_node,overlap_goal[o].this_goal)
+                
+            #plan with free nodes first
+            for m in mid_goals:
+                for a in remaining_agentList:
+                    if a['name'] is m:
+                        a['goal'] = pt.graph2grid(mid_goals[m].mid_goal,env.vertices_with_name)
+
+            partial_solution = planning_loop(remaining_agentList,print_result=False)
+            if(partial_solution == -1):
+                return -1
+            #print(p)
+            #determine how long robots should stay to avoid collision
+            len_list = []
+            for p in partial_solution:
+                #find the largest competed length
+                if p not in mid_goals:
+                    len_list.append(len(partial_solution[p]))
+
+            if(len(len_list)>0):
+                max_len = max(len_list)
+
+                #append mid_goal to match length
+                for p in partial_solution:
+                    if p in mid_goals:
+                        n_app = max_len - len(partial_solution[p]) - 1
+                        list_to_app = [mid_goals[p].mid_goal] * n_app
+                        partial_solution[p] += list_to_app
+
+            #print(partial_solution)
+            #move finished agent to finished list
+            for r in partial_solution:
+                #if agent is in not in mid_goal (finished path generation)
+                if r not in mid_goals:
+                    #if agent is not in unfinished list -> move to finished list
+                    if r not in unfinished_agents_path_list_dict:
+                        #add to finished list
+                        finished_agents_path_dict[r] = partial_solution[r]
+                        #remove from remaining agents
+                        for i in range(len(remaining_agentList)):
+                            if remaining_agentList[i]['name'] == r:
+                                del remaining_agentList[i]
+                                break
+                    #if agent is in unfinished list -> augment then move to finished list
+                    else:
+                        #augment paths
+                        unfinished_agents_path_list_dict[r] += partial_solution[r]
+                        #add to finished list
+                        finished_agents_path_dict[r] = unfinished_agents_path_list_dict[r]
+                        #remove from remaining agents
+                        for i in range(len(remaining_agentList)):
+                            if remaining_agentList[i]['name'] == r:
+                                del remaining_agentList[i]
+
+                else: #still not finished
+                    #add to unfinished list
+                    if r in unfinished_agents_path_list_dict:
+                        unfinished_agents_path_list_dict[r].append(partial_solution[r])
+                    else:
+                        unfinished_agents_path_list_dict[r] = partial_solution[r]
+            
+            #reset to original goals for remaining agents
+            for r in remaining_agentList:
+                for a in agents_in:
+                    if r['name'] == a['name']:
+                        r['start'] = pt.graph2grid(mid_goals[r['name']].mid_goal,env.vertices_with_name)
+                        r['goal'] = pt.graph2grid(mid_goals[r['name']].target_goal,env.vertices_with_name)
+
+            #update overlap
+            overlap_goal = {} #dict of string:overlap_robots class
+            for robot in remaining_agentList:
+                goal_node = pt.grid2graph((robot['goal'][0],robot['goal'][1]),env.vertices_with_name)
+                for path_key in single_path_dicts:
+                #skip for itself
+                    if path_key is not robot['name']:
+                        #add to overlap goal if goal is on someone else's path
+                        if goal_node in single_path_dicts[path_key] and path_key not in finished_agents_path_dict:
+                            #if there's no key for this robot
+                            if robot['name'] not in overlap_goal:
+                                overlap_ = overlap_robots(robot['name'],[path_key],goal_node)
+                                overlap_goal[robot['name']] = overlap_
+                            #if there's a overlap found previously, append to the list
+                            else:                        
+                                overlap_goal[robot['name']].other_robots_list.append(path_key)                        
         
-    
-    
+        pic.printC("Returning Result with additional via-points",'green')
+        print(finished_agents_path_dict)
+        write_to_file(finished_agents_path_dict,args,env.vertices_with_name)
+        return finished_agents_path_dict
+                
+    else: #fine without additional handlings
+        return planning_loop(agents_in)
+
 
 def main():
     #Initialize Arbi Client Agent
@@ -272,7 +443,6 @@ def main():
     #parser.add_argument("output", help="output file with the schedule")
     #args = parser.parse_args()
 
-    
 
     # Read from input file
     with open(args['param'], 'r') as arg:
@@ -323,8 +493,8 @@ def main():
 
     # assume each target is not an obstacle node
 
-    a1 = ["a1","239","230"]
-    a2 = ["a2","234","234"]
+    a1 = ["a1","239","234"]
+    a2 = ["a2","237","235"]
     test_robots = []
     test_robots.append(a1)
     test_robots.append(a2)
@@ -344,73 +514,11 @@ def main():
     msg = robot_robot_delim.join(msg_list)
     
     agents_in = msg2agentList(msg)
-
-    # get single-robot path for all robots
-    single_path_dicts={}
-    for robot in agents_in:
-        single_agent = [robot]
-        path = planning_loop(single_agent)
-        single_path_dicts[robot['name']] = path[robot['name']]
-
-    #check if any goal is in any path {"robot name":[list of other robots with a path has the goal on]}
-    overlap_goal = {} #dict of string:overlap_robots class
-    for robot in agents_in:
-        goal_node = pt.grid2graph((robot['goal'][0],robot['goal'][1]),vertices_with_name)
-        for path_key in single_path_dicts:
-           #skip for itself
-            if path_key is not robot['name']:
-                #add to overlap goal if goal is on someone else's path
-                if goal_node in single_path_dicts[path_key]:
-                    #if there's no key for this robot
-                    if robot['name'] not in overlap_goal:
-                        overlap_ = overlap_robots(robot['name'],[path_key],goal_node)
-                        overlap_goal[robot['name']] = overlap_
-                    #if there's a overlap found previously, append to the list
-                    else:                        
-                        overlap_goal[robot['name']].other_robots_list.append(path_key)
-
-    #see if overlap_goal is empty or not. proceed if empty, do additional handling if not
-    if(bool(overlap_goal)==True): #if not empty (bool(empty dict) == False)
-        mid_goals = {}
-        #expend until a node not on any of the overlapped paths is found for each robot (node to avoid collision)
-        for o in overlap_goal:
-            #find a node to avoid collision
-            free_node = find_free_node(overlap_goal[o].this_goal,overlap_goal[o].other_robots_list,single_path_dicts,edges_dict)
-            if free_node is not False: #if a free node is found
-                #set a temp goals
-                mid_goals[overlap_goal[o].this_robot] = two_goals(free_node,overlap_goal[o].this_goal)
-            
-        #plan with free nodes first
-        for m in mid_goals:
-            for a in agents_in:
-                if a['name'] is m:
-                    a['goal'] = pt.graph2grid(mid_goals[m].mid_goal,vertices_with_name)
-
-        partial_solution = planning_loop(agents_in)
-        #print(p)
-        #determine how long robots should stay to avoid collision
-        len_list = []
-        for p in partial_solution:
-            #find the largest competed length
-            if p not in mid_goals:
-                len_list.append(len(partial_solution[p]))
-        max_len = max(len_list)
-
-        #append mid_goal to match length
-        for p in partial_solution:
-            if p in mid_goals:
-                n_app = max_len - len(partial_solution[p])
-                list_to_app = [mid_goals[p].mid_goal] * n_app
-                partial_solution[p] += list_to_app
-
-        print(partial_solution)
-            
-    else:
-        planning_loop(agents_in)
-
+    handle_with_exceptions(agents_in)
+    
     while(1):
-    #   planResult = planning_loop()
-       time.sleep(0.01)
+        #   planResult = planning_loop()
+        time.sleep(0.01)
 
     #close arbi agent
     #arbiAgent.close()
