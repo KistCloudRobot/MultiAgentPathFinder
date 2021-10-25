@@ -14,17 +14,18 @@ import yaml
 from map_parse import MapMOS as mapParser
 import time
 import deps.mapElements as mapElements
-#import a_agent
+
 import deps.planningTools as pt
 import deps.printInColor as pic
+import handler_tools as ht
 
 #use arbi
-"""
+
 from python_arbi_framework.arbi_agent.agent.arbi_agent import ArbiAgent
 from python_arbi_framework.arbi_agent.configuration import BrokerType
 from python_arbi_framework.arbi_agent.agent import arbi_agent_excutor
 from arbi_agent.model import generalized_list_factory as GLFactory
-"""
+
 #use arbi end
 
 robot_path_delim = ':'
@@ -47,7 +48,7 @@ class overlap_robots:
         self.this_goal = this_goal
 
 #use arbi
-"""
+
 class aAgent(ArbiAgent):
     def __init__(self, agent_name, broker_url = "tcp://127.0.0.1:61616"):
         super().__init__()
@@ -71,7 +72,7 @@ class aAgent(ArbiAgent):
     def execute(self, broker_type=2):
         arbi_agent_excutor.excute(self.broker_url, self.agent_name, self, broker_type)
         print(self.agent_name + " ready")
-"""
+
 #use arbi end
 
 def msg2agentList(msg):
@@ -88,25 +89,29 @@ def msg2agentList(msg):
     return agentsList
 
 #use arbi
-"""
+
 #globalized mapElements data
 mapElems = mapElements.mapElements()
 
 def msg2arbi(msg, header="MultiRobotPath", pathHeader = "RobotPath", singlePathHeader = "path"):
-    # result = agent1:219-220-221-222-223-224-225-15
-    # (MultiRobotPath (RobotPath $robot_id (path $v_id1 $v_id2 $v_id3, ...)), …)
-    out_msg = "(" + header + " "
-    pathList = []
-    if(len(msg)>0):        
-        msgList = msg.split(robot_robot_delim)
-        for r in msgList:
-            name_node = r.split(robot_path_delim)
-            nodes = name_node[1].split(path_path_delim)
-            resultPath = "(" + singlePathHeader + " " + " ".join(nodes) + ")"
-            pathList.append('(' + pathHeader + " " + "\"" + name_node[0] + "\" " + resultPath + ')')
-    
-    out_msg += " ".join(pathList)
-    out_msg += ')'
+
+    if(msg == 'failed'):
+        out_msg = "(" + header + " " + msg + ")"
+    else:
+        # result = agent1:219-220-221-222-223-224-225-15
+        # (MultiRobotPath (RobotPath $robot_id (path $v_id1 $v_id2 $v_id3, ...)), …)
+        out_msg = "(" + header + " "
+        pathList = []
+        if(len(msg)>0):        
+            msgList = msg.split(robot_robot_delim)
+            for r in msgList:
+                name_node = r.split(robot_path_delim)
+                nodes = name_node[1].split(path_path_delim)
+                resultPath = "(" + singlePathHeader + " " + " ".join(nodes) + ")"
+                pathList.append('(' + pathHeader + " " + "\"" + name_node[0] + "\" " + resultPath + ')')
+        
+        out_msg += " ".join(pathList)
+        out_msg += ')'
 
     return out_msg
 
@@ -133,6 +138,26 @@ def arbi2msg(arbi_msg):
 
     return ';'.join(robotSet)
 
+def unique_goal_check(msg):
+    verdict = True
+    byRobots = msg.split(robot_robot_delim)
+    if(len(byRobots)>1):
+        for r in byRobots:
+            pivot_sp = r.split(robot_path_delim)
+            pivot_robot = pivot_sp[0]
+            pivot_goal = pivot_sp[2]
+            for c in byRobots:
+                compare_sp = c.split(robot_path_delim)
+                compare_robot = compare_sp[0]
+                compare_goal = compare_sp[2]
+                #skip itself
+                if(pivot_robot != compare_robot):
+                    if(pivot_goal == compare_goal):
+                        #goals are not unique
+                        verdict = False
+
+    return verdict
+                
 
 def handleReqest(msg_gl):
     handle_start = time.time()
@@ -140,6 +165,12 @@ def handleReqest(msg_gl):
     #convert arbi Gl to custom format
     msg = arbi2msg(msg_gl)
     # name1,start1,goal1;name2,start2,goal2, ...
+    
+    #check if all goals are unique
+    if(unique_goal_check(msg) == False):
+        #goals are not unique. return fail
+        return msg2arbi("failed")
+    
     agentsList = []
     byRobots = msg.split(robot_robot_delim)
     for r in byRobots:
@@ -169,7 +200,7 @@ def handleReqest(msg_gl):
     conv = msg2arbi(out_msg)
     #return out_msg
     return conv
-"""
+
 #use arbi end
 
 def planning_loop(agents_in,print_result=True):
@@ -293,28 +324,31 @@ def write_to_file(path_dict,arg,vert):
 
 def handle_with_exceptions(agents_in):
     #initialize env
+    
     env = pt.Environment(mapElems.dimension, agents_in, mapElems.obstacles)
     env.vertices_with_name = mapElems.vertices_with_name
     env.edges_dict = mapElems.edges_dict
     # get single-robot path for all robots
-    single_path_dicts={}
+    single_paths_dict={}
     for robot in agents_in:
         single_agent = [robot]
         path = planning_loop(single_agent,print_result=False)
         if(path == -1): #failed to find a path
             pic.printC("Failed to find a single robot path", 'warning')
-            return -1
-        single_path_dicts[robot['name']] = path[robot['name']]
+            #return -1
+            single_paths_dict[robot['name']] = []
+        else:
+            single_paths_dict[robot['name']] = path[robot['name']]
 
     #check if any goal is in any path {"robot name":[list of other robots with a path has the goal on]}
     overlap_goal = {} #dict of string:overlap_robots class
     for robot in agents_in:
         goal_node = pt.grid2graph((robot['goal'][0],robot['goal'][1]),env.vertices_with_name)
-        for path_key in single_path_dicts:
+        for path_key in single_paths_dict:
            #skip for itself
             if path_key is not robot['name']:
                 #add to overlap goal if goal is on someone else's path
-                if goal_node in single_path_dicts[path_key]:
+                if goal_node in single_paths_dict[path_key]:
                     #if there's no key for this robot
                     if robot['name'] not in overlap_goal:
                         overlap_ = overlap_robots(robot['name'],[path_key],goal_node)
@@ -322,6 +356,13 @@ def handle_with_exceptions(agents_in):
                     #if there's a overlap found previously, append to the list
                     else:                        
                         overlap_goal[robot['name']].other_robots_list.append(path_key)
+    
+
+    #handler_tools = ht.handler_tools(mapElems,args,yaml,agents_in)
+
+    #single_paths_dict, overlap_goal = handler_tools.fill_single_path_overlap_dict(agents_in)
+    #env = pt.Environment(mapElems.dimension, agents_in, mapElems.obstacles)
+    #env.vertices_with_name = mapElems.vertices_with_name
 
     #see if overlap_goal is empty or not. proceed if empty, do additional handling if not
     if(bool(overlap_goal)==True): #if not empty (bool(empty dict) == False)
@@ -333,10 +374,12 @@ def handle_with_exceptions(agents_in):
             #expend until a node not on any of the overlapped paths is found for each robot (node to avoid collision)
             for o in overlap_goal:
                 #find a node to avoid collision
-                free_node = find_free_node(overlap_goal[o].this_goal,overlap_goal[o].other_robots_list,single_path_dicts,env.edges_dict)
-                if free_node is not False: #if a free node is found
+                free_node = find_free_node(overlap_goal[o].this_goal,overlap_goal[o].other_robots_list,single_paths_dict,env.edges_dict)
+                if(free_node!=False): #if a free node is found
                     #set a temp goals
                     mid_goals[overlap_goal[o].this_robot] = two_goals(free_node,overlap_goal[o].this_goal)
+                else: #no free node found
+                    return -1
                 
             #plan with free nodes first
             for m in mid_goals:
@@ -408,11 +451,11 @@ def handle_with_exceptions(agents_in):
             overlap_goal = {} #dict of string:overlap_robots class
             for robot in remaining_agentList:
                 goal_node = pt.grid2graph((robot['goal'][0],robot['goal'][1]),env.vertices_with_name)
-                for path_key in single_path_dicts:
+                for path_key in single_paths_dict:
                 #skip for itself
                     if path_key is not robot['name']:
                         #add to overlap goal if goal is on someone else's path
-                        if goal_node in single_path_dicts[path_key] and path_key not in finished_agents_path_dict:
+                        if goal_node in single_paths_dict[path_key] and path_key not in finished_agents_path_dict:
                             #if there's no key for this robot
                             if robot['name'] not in overlap_goal:
                                 overlap_ = overlap_robots(robot['name'],[path_key],goal_node)
@@ -433,10 +476,10 @@ def handle_with_exceptions(agents_in):
 def main():
     #Initialize Arbi Client Agent
     #start an agent
-    #arbiAgent = aAgent(agent_name=arbiMAPF)
-    #arbiAgent.execute()
+    arbiAgent = aAgent(agent_name=arbiMAPF)
+    arbiAgent.execute()
 
-    #arbiAgent.send("agent://www.arbi.com/receiveTest","Hi Bmo");
+    arbiAgent.send("agent://www.arbi.com/receiveTest","Hi Bmo");
     
     #parser = argparse.ArgumentParser()
     #parser.add_argument("param", help="input file containing map and obstacles")

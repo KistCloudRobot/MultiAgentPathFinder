@@ -1,10 +1,10 @@
 agents:
 -   start: [8, 9] #219
     goal: [4, 9] #15
-    name: a1
+    name: AMR_TOW1
 -   start: [5, 9] #222
     goal: [6, 9] #1
-    name: a2
+    name: AMR_TOW2
 map:
     dimensions: [13, 12]
     vertices:
