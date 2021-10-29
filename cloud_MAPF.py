@@ -17,7 +17,7 @@ import deps.mapElements as mapElements
 
 import deps.planningTools as pt
 import deps.printInColor as pic
-import handler_tools as ht
+#import handler_tools as ht
 
 #use arbi
 
@@ -25,29 +25,6 @@ from python_arbi_framework.arbi_agent.agent.arbi_agent import ArbiAgent
 from python_arbi_framework.arbi_agent.configuration import BrokerType
 from python_arbi_framework.arbi_agent.agent import arbi_agent_excutor
 from arbi_agent.model import generalized_list_factory as GLFactory
-
-#use arbi end
-
-robot_path_delim = ':'
-robot_robot_delim = ';'
-path_path_delim = '-'
-
-arbiMAPF = "agent://www.arbi.com/MAPF"
-
-args = {"param":"yaml/input.yaml","output":"yaml/output.yaml"}
-
-class two_goals:
-    def __init__(self,mGoal,tGoal):
-        self.mid_goal = mGoal
-        self.target_goal = tGoal
-
-class overlap_robots:
-    def __init__(self,this_robot,other_robots_list,this_goal):
-        self.this_robot = this_robot
-        self.other_robots_list = other_robots_list
-        self.this_goal = this_goal
-
-#use arbi
 
 class aAgent(ArbiAgent):
     def __init__(self, agent_name, broker_url = "tcp://127.0.0.1:61616"):
@@ -74,6 +51,25 @@ class aAgent(ArbiAgent):
         print(self.agent_name + " ready")
 
 #use arbi end
+
+robot_path_delim = ':'
+robot_robot_delim = ';'
+path_path_delim = '-'
+
+arbiMAPF = "agent://www.arbi.com/MAPF"
+
+args = {"param":"yaml/input.yaml","output":"yaml/output.yaml"}
+
+class two_goals:
+    def __init__(self,mGoal,tGoal):
+        self.mid_goal = mGoal
+        self.target_goal = tGoal
+
+class overlap_robots:
+    def __init__(self,this_robot,other_robots_list,this_goal):
+        self.this_robot = this_robot
+        self.other_robots_list = other_robots_list
+        self.this_goal = this_goal
 
 def msg2agentList(msg):
     # name1,start1,goal1;name2,start2,goal2, ...
@@ -369,6 +365,7 @@ def handle_with_exceptions(agents_in):
         finished_agents_path_dict = {}
         unfinished_agents_path_list_dict = {}
         remaining_agentList = agents_in
+        #todo: overlapping to each other leads to endless loop
         while(len(remaining_agentList)>0):
             mid_goals = {}
             #expend until a node not on any of the overlapped paths is found for each robot (node to avoid collision)
@@ -476,10 +473,15 @@ def handle_with_exceptions(agents_in):
 def main():
     #Initialize Arbi Client Agent
     #start an agent
+
+    #use arbi
+    
     arbiAgent = aAgent(agent_name=arbiMAPF)
     arbiAgent.execute()
 
     arbiAgent.send("agent://www.arbi.com/receiveTest","Hi Bmo");
+    
+    #use arbi end
     
     #parser = argparse.ArgumentParser()
     #parser.add_argument("param", help="input file containing map and obstacles")
@@ -536,11 +538,18 @@ def main():
 
     # assume each target is not an obstacle node
 
-    a1 = ["a1","239","234"]
-    a2 = ["a2","237","235"]
+
+    #test run
+    """
+    a1 = ["a1","201","222"]
+    a2 = ["a2","221","216"]
+    b1 = ["b1","203","240"]
+    b2 = ["b2","238","204"]
     test_robots = []
     test_robots.append(a1)
     test_robots.append(a2)
+    test_robots.append(b1)
+    test_robots.append(b2)
 
     #a1_start = pt.graph2grid(a1[0],vertices_with_name)
     #a2_start = pt.graph2grid(a2[0],vertices_with_name)
@@ -558,6 +567,8 @@ def main():
     
     agents_in = msg2agentList(msg)
     handle_with_exceptions(agents_in)
+    """
+    #test run end
     
     while(1):
         #   planResult = planning_loop()
