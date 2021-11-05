@@ -20,7 +20,7 @@ import deps.printInColor as pic
 #import handler_tools as ht
 
 #use arbi
-
+"""
 from python_arbi_framework.arbi_agent.agent.arbi_agent import ArbiAgent
 from python_arbi_framework.arbi_agent.configuration import BrokerType
 from python_arbi_framework.arbi_agent.agent import arbi_agent_excutor
@@ -49,7 +49,7 @@ class aAgent(ArbiAgent):
     def execute(self, broker_type=2):
         arbi_agent_excutor.excute(self.broker_url, self.agent_name, self, broker_type)
         print(self.agent_name + " ready")
-
+"""
 #use arbi end
 
 robot_path_delim = ':'
@@ -85,7 +85,7 @@ def msg2agentList(msg):
     return agentsList
 
 #use arbi
-
+"""
 #globalized mapElements data
 mapElems = mapElements.mapElements()
 
@@ -196,7 +196,7 @@ def handleReqest(msg_gl):
     conv = msg2arbi(out_msg)
     #return out_msg
     return conv
-
+"""
 #use arbi end
 
 def planning_loop(agents_in,print_result=True):
@@ -217,12 +217,12 @@ def planning_loop(agents_in,print_result=True):
     #agents_in.append({'start':[6,1], 'goal':[3,3], 'name':'agent1'})
 
     #initialize env
-    env = pt.Environment(mapElems.dimension, agents_in, mapElems.obstacles)
-    env.vertices_with_name = mapElems.vertices_with_name
-    env.edges_dict = mapElems.edges_dict
+    env = pt.Environment(mapElems.dimension, agents_in, mapElems.obstacles, mapElems.vertices_with_name, mapElems.edges_dict)
+    #env.vertices_with_name = mapElems.vertices_with_name
+    #env.edges_dict = mapElems.edges_dict
     #Jeeho Edit
     #node class list
-    env.node_list = pt.to_node_list(mapElems.vertices_with_name)
+    #env.node_list = pt.to_node_list(mapElems.vertices_with_name)
     
     # Searching
     cbs = pt.CBS(env)
@@ -261,7 +261,7 @@ def planning_loop(agents_in,print_result=True):
     #repeating ends here
 
 
-def find_free_node(goal_node, overlap_robots, single_path_dict, edges_dict):
+def find_free_node(goal_node, overlap_robots, single_path_dict, env_in):
     #expand until it finds a free node. return false if not found
     opened_list = []
     closed_list = []
@@ -271,8 +271,12 @@ def find_free_node(goal_node, overlap_robots, single_path_dict, edges_dict):
         nodes_to_avoid = nodes_to_avoid + single_path_dict[other_robot]
 
     #initial set of neighbors
-    neighbors_list = edges_dict[goal_node]
-    opened_list = copy.deepcopy(neighbors_list)
+    neighbors_list = env_in.edges_dict[goal_node]
+    #copy nodes only (exclude stations)
+    opened_list = []
+    for nn in neighbors_list:
+        if(env_in.get_node_type_by_name(nn)=='node'):
+            opened_list.append(nn)
     
     while(len(opened_list)>0):
         for neighbor in opened_list:
@@ -286,9 +290,9 @@ def find_free_node(goal_node, overlap_robots, single_path_dict, edges_dict):
         #no free node found. continue expansion
         for node in searched_in_this_iteration:
             opened_list.remove(node)
-            neighbors = edges_dict[node]
+            neighbors = env_in.edges_dict[node]
             for n in neighbors:
-                if n not in closed_list:
+                if n not in closed_list and env_in.get_node_type_by_name(n)=='node':
                     opened_list.append(n)
 
     #failed to find a free node. exit with failure
@@ -321,9 +325,9 @@ def write_to_file(path_dict,arg,vert):
 def handle_with_exceptions(agents_in):
     #initialize env
     
-    env = pt.Environment(mapElems.dimension, agents_in, mapElems.obstacles)
-    env.vertices_with_name = mapElems.vertices_with_name
-    env.edges_dict = mapElems.edges_dict
+    env = pt.Environment(mapElems.dimension, agents_in, mapElems.obstacles, mapElems.vertices_with_name, mapElems.edges_dict)
+    #env.vertices_with_name = mapElems.vertices_with_name
+    #env.edges_dict = mapElems.edges_dict
     # get single-robot path for all robots
     single_paths_dict={}
     for robot in agents_in:
@@ -371,7 +375,7 @@ def handle_with_exceptions(agents_in):
             #expend until a node not on any of the overlapped paths is found for each robot (node to avoid collision)
             for o in overlap_goal:
                 #find a node to avoid collision
-                free_node = find_free_node(overlap_goal[o].this_goal,overlap_goal[o].other_robots_list,single_paths_dict,env.edges_dict)
+                free_node = find_free_node(overlap_goal[o].this_goal,overlap_goal[o].other_robots_list,single_paths_dict,env)
                 if(free_node!=False): #if a free node is found
                     #set a temp goals
                     mid_goals[overlap_goal[o].this_robot] = two_goals(free_node,overlap_goal[o].this_goal)
@@ -475,12 +479,12 @@ def main():
     #start an agent
 
     #use arbi
-    
+    """
     arbiAgent = aAgent(agent_name=arbiMAPF)
     arbiAgent.execute()
 
     arbiAgent.send("agent://www.arbi.com/receiveTest","Hi Bmo");
-    
+    """
     #use arbi end
     
     #parser = argparse.ArgumentParser()
@@ -540,16 +544,18 @@ def main():
 
 
     #test run
-    """
-    a1 = ["a1","201","222"]
-    a2 = ["a2","221","216"]
-    b1 = ["b1","203","240"]
-    b2 = ["b2","238","204"]
+    
+    #a1 = ["a1","201","222"]
+    #a2 = ["a2","221","216"]
+    #b1 = ["b1","203","240"]
+    #b2 = ["b2","238","204"]
+    a1 = ["a1","233","239"]
+    a2 = ["a2","240","204"]
     test_robots = []
     test_robots.append(a1)
     test_robots.append(a2)
-    test_robots.append(b1)
-    test_robots.append(b2)
+    #test_robots.append(b1)
+    #test_robots.append(b2)
 
     #a1_start = pt.graph2grid(a1[0],vertices_with_name)
     #a2_start = pt.graph2grid(a2[0],vertices_with_name)
@@ -567,7 +573,7 @@ def main():
     
     agents_in = msg2agentList(msg)
     handle_with_exceptions(agents_in)
-    """
+    
     #test run end
     
     while(1):

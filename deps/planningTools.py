@@ -130,7 +130,7 @@ class Constraints(object):
             "EC: " + str([str(ec) for ec in self.edge_constraints])
 
 class Environment(object):
-    def __init__(self, dimension, agents, obstacles):
+    def __init__(self, dimension, agents, obstacles, vertices_with_name, edges_dict):
         self.dimension = dimension
         self.obstacles = obstacles
 
@@ -146,9 +146,12 @@ class Environment(object):
 
         #Jeeho Edit
         self.node_list = []
-        self.vertices_with_name = []
-        self.edges_dict = {}
+        self.vertices_with_name = vertices_with_name
+        self.edges_dict = edges_dict
 
+        #fill node_list
+        self.node_list = to_node_list(self.vertices_with_name)
+    
     #Jeeho Edit
     def get_agent_goal(self, agent_name):
         for a in self.agents:
