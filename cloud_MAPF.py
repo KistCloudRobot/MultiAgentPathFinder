@@ -20,7 +20,7 @@ import deps.printInColor as pic
 #import handler_tools as ht
 
 #use arbi
-"""
+
 from python_arbi_framework.arbi_agent.agent.arbi_agent import ArbiAgent
 from python_arbi_framework.arbi_agent.configuration import BrokerType
 from python_arbi_framework.arbi_agent.agent import arbi_agent_excutor
@@ -49,7 +49,7 @@ class aAgent(ArbiAgent):
     def execute(self, broker_type=2):
         arbi_agent_excutor.excute(self.broker_url, self.agent_name, self, broker_type)
         print(self.agent_name + " ready")
-"""
+
 #use arbi end
 
 robot_path_delim = ':'
@@ -85,7 +85,7 @@ def msg2agentList(msg):
     return agentsList
 
 #use arbi
-"""
+
 #globalized mapElements data
 mapElems = mapElements.mapElements()
 
@@ -196,7 +196,7 @@ def handleReqest(msg_gl):
     conv = msg2arbi(out_msg)
     #return out_msg
     return conv
-"""
+
 #use arbi end
 
 def planning_loop(agents_in,print_result=True):
@@ -479,12 +479,12 @@ def main():
     #start an agent
 
     #use arbi
-    """
+    
     arbiAgent = aAgent(agent_name=arbiMAPF)
     arbiAgent.execute()
 
-    arbiAgent.send("agent://www.arbi.com/receiveTest","Hi Bmo");
-    """
+    arbiAgent.send("agent://www.arbi.com/receiveTest","Hi from MAPF");
+    
     #use arbi end
     
     #parser = argparse.ArgumentParser()
