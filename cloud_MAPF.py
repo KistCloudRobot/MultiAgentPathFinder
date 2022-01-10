@@ -20,14 +20,12 @@ import deps.printInColor as pic
 #import handler_tools as ht
 
 #use arbi
-"""
-from python_arbi_framework.arbi_agent.agent.arbi_agent import ArbiAgent
-from python_arbi_framework.arbi_agent.configuration import BrokerType
-from python_arbi_framework.arbi_agent.agent import arbi_agent_excutor
+from arbi_agent.agent.arbi_agent import ArbiAgent
+from arbi_agent.agent import arbi_agent_executor
 from arbi_agent.model import generalized_list_factory as GLFactory
 
 class aAgent(ArbiAgent):
-    def __init__(self, agent_name, broker_url = "tcp://127.0.0.1:61616"):
+    def __init__(self, agent_name, broker_url = "tcp://172.16.165.106:61313"):
         super().__init__()
         self.broker_url = broker_url
         self.agent_name = agent_name
@@ -37,6 +35,7 @@ class aAgent(ArbiAgent):
         print(self.agent_url + "\t-> receive data : " + data)
     
     def on_request(self, sender: str, request: str) -> str:
+        print('sender : ' + sender)
         print(self.agent_url + "\t-> receive request : " + request)
         return handleReqest(request)
         #return "(request ok)"
@@ -47,16 +46,15 @@ class aAgent(ArbiAgent):
         return handleReqest(query)
 
     def execute(self, broker_type=2):
-        arbi_agent_excutor.excute(self.broker_url, self.agent_name, self, broker_type)
+        arbi_agent_executor.execute(self.broker_url, self.agent_name, self, broker_type)
         print(self.agent_name + " ready")
-"""
 #use arbi end
 
 robot_path_delim = ':'
 robot_robot_delim = ';'
 path_path_delim = '-'
 
-arbiMAPF = "agent://www.arbi.com/MAPF"
+arbiMAPF = "agent://www.arbi.com/Local/MultiAgentPathFinder"
 
 args = {"param":"yaml/input.yaml","output":"yaml/output.yaml"}
 
@@ -85,7 +83,6 @@ def msg2agentList(msg):
     return agentsList
 
 #use arbi
-"""
 #globalized mapElements data
 mapElems = mapElements.mapElements()
 
@@ -196,7 +193,7 @@ def handleReqest(msg_gl):
     conv = msg2arbi(out_msg)
     #return out_msg
     return conv
-"""
+
 #use arbi end
 
 def planning_loop(agents_in,print_result=True):
@@ -479,12 +476,11 @@ def main():
     #start an agent
 
     #use arbi
-    """
     arbiAgent = aAgent(agent_name=arbiMAPF)
     arbiAgent.execute()
 
-    arbiAgent.send("agent://www.arbi.com/receiveTest","Hi Bmo");
-    """
+    # arbiAgent.send("agent://www.arbi.com/receiveTest","Hi Bmo");
+
     #use arbi end
     
     #parser = argparse.ArgumentParser()

@@ -1,22 +1,40 @@
-cost: 6
+cost: 12
 schedule:
-  AMR_LIFT1:
+  AMR_TOW1:
   - t: 0
     x: 1
-    y: 3
-  AMR_LIFT2:
-  - t: 0
-    x: 3
-    y: 1
+    y: 10
   - t: 1
-    x: 3
-    y: 2
+    x: 2
+    y: 10
   - t: 2
     x: 2
-    y: 2
+    y: 9
   - t: 3
-    x: 2
-    y: 1
+    x: 3
+    y: 9
   - t: 4
-    x: 1
-    y: 1
+    x: 4
+    y: 9
+  - t: 5
+    x: 5
+    y: 9
+  - t: 6
+    x: 6
+    y: 9
+  - t: 7
+    x: 7
+    y: 9
+  - t: 8
+    x: 8
+    y: 9
+  AMR_TOW2:
+  - t: 0
+    x: 3
+    y: 9
+  - t: 1
+    x: 4
+    y: 9
+  - t: 2
+    x: 4
+    y: 10
