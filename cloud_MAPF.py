@@ -24,6 +24,12 @@ from arbi_agent.agent.arbi_agent import ArbiAgent
 from arbi_agent.agent import arbi_agent_executor
 from arbi_agent.model import generalized_list_factory as GLFactory
 
+
+arbiMAPF = "agent://www.arbi.com/Local/MultiAgentPathFinder"
+broker_url = "tcp://172.16.165.106:61313"
+
+# broker_url = 'tcp://' + os.environ["JMS_BROKER"]
+
 class aAgent(ArbiAgent):
     def __init__(self, agent_name, broker_url = "tcp://172.16.165.106:61313"):
         super().__init__()
@@ -54,7 +60,6 @@ robot_path_delim = ':'
 robot_robot_delim = ';'
 path_path_delim = '-'
 
-arbiMAPF = "agent://www.arbi.com/Local/MultiAgentPathFinder"
 
 args = {"param":"yaml/input.yaml","output":"yaml/output.yaml"}
 
@@ -476,7 +481,7 @@ def main():
     #start an agent
 
     #use arbi
-    arbiAgent = aAgent(agent_name=arbiMAPF)
+    arbiAgent = aAgent(agent_name=arbiMAPF, broker_url=broker_url)
     arbiAgent.execute()
 
     # arbiAgent.send("agent://www.arbi.com/receiveTest","Hi Bmo");
