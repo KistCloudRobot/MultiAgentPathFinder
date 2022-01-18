@@ -19,37 +19,38 @@ import deps.planningTools as pt
 import deps.printInColor as pic
 #import handler_tools as ht
 
+USE_ARBI = True
+
 #use arbi
+if USE_ARBI:
+    from python_arbi_framework.arbi_agent.agent.arbi_agent import ArbiAgent
+    from python_arbi_framework.arbi_agent.configuration import BrokerType
+    from python_arbi_framework.arbi_agent.agent import arbi_agent_excutor
+    from arbi_agent.model import generalized_list_factory as GLFactory
 
-from python_arbi_framework.arbi_agent.agent.arbi_agent import ArbiAgent
-from python_arbi_framework.arbi_agent.configuration import BrokerType
-from python_arbi_framework.arbi_agent.agent import arbi_agent_excutor
-from arbi_agent.model import generalized_list_factory as GLFactory
+    class aAgent(ArbiAgent):
+        def __init__(self, agent_name, broker_url = "tcp://127.0.0.1:61616"):
+            super().__init__()
+            self.broker_url = broker_url
+            self.agent_name = agent_name
+            #self.agent_url = agent_url
 
-class aAgent(ArbiAgent):
-    def __init__(self, agent_name, broker_url = "tcp://127.0.0.1:61616"):
-        super().__init__()
-        self.broker_url = broker_url
-        self.agent_name = agent_name
-        #self.agent_url = agent_url
+        def on_data(self, sender: str, data: str):
+            print(self.agent_url + "\t-> receive data : " + data)
+        
+        def on_request(self, sender: str, request: str) -> str:
+            print(self.agent_url + "\t-> receive request : " + request)
+            return handleReqest(request)
+            #return "(request ok)"
 
-    def on_data(self, sender: str, data: str):
-        print(self.agent_url + "\t-> receive data : " + data)
-    
-    def on_request(self, sender: str, request: str) -> str:
-        print(self.agent_url + "\t-> receive request : " + request)
-        return handleReqest(request)
-        #return "(request ok)"
+        def on_query(self, sender: str, query: str) -> str:
+            print(self.agent_url + "\t-> receive query : " + query)
+            #print(query)
+            return handleReqest(query)
 
-    def on_query(self, sender: str, query: str) -> str:
-        print(self.agent_url + "\t-> receive query : " + query)
-        #print(query)
-        return handleReqest(query)
-
-    def execute(self, broker_type=2):
-        arbi_agent_excutor.excute(self.broker_url, self.agent_name, self, broker_type)
-        print(self.agent_name + " ready")
-
+        def execute(self, broker_type=2):
+            arbi_agent_excutor.excute(self.broker_url, self.agent_name, self, broker_type)
+            print(self.agent_name + " ready")
 #use arbi end
 
 robot_path_delim = ':'
@@ -85,118 +86,117 @@ def msg2agentList(msg):
     return agentsList
 
 #use arbi
+if USE_ARBI:
+    #globalized mapElements data
+    mapElems = mapElements.mapElements()
 
-#globalized mapElements data
-mapElems = mapElements.mapElements()
+    def msg2arbi(msg, header="MultiRobotPath", pathHeader = "RobotPath", singlePathHeader = "path"):
 
-def msg2arbi(msg, header="MultiRobotPath", pathHeader = "RobotPath", singlePathHeader = "path"):
+        if(msg == 'failed'):
+            out_msg = "(" + header + " " + msg + ")"
+        else:
+            # result = agent1:219-220-221-222-223-224-225-15
+            # (MultiRobotPath (RobotPath $robot_id (path $v_id1 $v_id2 $v_id3, ...)), …)
+            out_msg = "(" + header + " "
+            pathList = []
+            if(len(msg)>0):        
+                msgList = msg.split(robot_robot_delim)
+                for r in msgList:
+                    name_node = r.split(robot_path_delim)
+                    nodes = name_node[1].split(path_path_delim)
+                    resultPath = "(" + singlePathHeader + " " + " ".join(nodes) + ")"
+                    pathList.append('(' + pathHeader + " " + "\"" + name_node[0] + "\" " + resultPath + ')')
+            
+            out_msg += " ".join(pathList)
+            out_msg += ')'
 
-    if(msg == 'failed'):
-        out_msg = "(" + header + " " + msg + ")"
-    else:
-        # result = agent1:219-220-221-222-223-224-225-15
-        # (MultiRobotPath (RobotPath $robot_id (path $v_id1 $v_id2 $v_id3, ...)), …)
-        out_msg = "(" + header + " "
-        pathList = []
-        if(len(msg)>0):        
-            msgList = msg.split(robot_robot_delim)
-            for r in msgList:
-                name_node = r.split(robot_path_delim)
-                nodes = name_node[1].split(path_path_delim)
-                resultPath = "(" + singlePathHeader + " " + " ".join(nodes) + ")"
-                pathList.append('(' + pathHeader + " " + "\"" + name_node[0] + "\" " + resultPath + ')')
+        return out_msg
+
+
+    def arbi2msg(arbi_msg):    
+        # (MultiRobotPath (RobotPath $robot_id $cur_vertex $goal_id), …)
+        # name1,start1,goal1;name2,start2,goal2, ...
+        gl = GLFactory.new_gl_from_gl_string(arbi_msg)
+        robotSet = []
+        if(gl.get_name() == "MultiRobotPath"):
+            for r in range(gl.get_expression_size()):
+                #(RobotPath $robot_id $cur_vertex $goal_id)
+                rp = str(gl.get_expression(r))
+                #remove paranthesis
+                rp_sp = rp.split('(')
+                rp_sp = rp_sp[1].split(')')[0]
+                #RobotPath $robot_id $cur_vertex $goal_id
+                rp_elems = rp_sp.split(" ")
+                # idx 1~3
+                #remove quotation marks from robot name
+                robot_name_sp = rp_elems[1].split('"')
+                robot_name = robot_name_sp[1]
+                robotSet.append(robot_name+robot_path_delim+rp_elems[2]+robot_path_delim+rp_elems[3])
+
+        return ';'.join(robotSet)
+
+    def unique_goal_check(msg):
+        verdict = True
+        byRobots = msg.split(robot_robot_delim)
+        if(len(byRobots)>1):
+            for r in byRobots:
+                pivot_sp = r.split(robot_path_delim)
+                pivot_robot = pivot_sp[0]
+                pivot_goal = pivot_sp[2]
+                for c in byRobots:
+                    compare_sp = c.split(robot_path_delim)
+                    compare_robot = compare_sp[0]
+                    compare_goal = compare_sp[2]
+                    #skip itself
+                    if(pivot_robot != compare_robot):
+                        if(pivot_goal == compare_goal):
+                            #goals are not unique
+                            verdict = False
+
+        return verdict
+                    
+
+    def handleReqest(msg_gl):
+        handle_start = time.time()
+        print(msg_gl)
+        #convert arbi Gl to custom format
+        msg = arbi2msg(msg_gl)
+        # name1,start1,goal1;name2,start2,goal2, ...
         
-        out_msg += " ".join(pathList)
-        out_msg += ')'
-
-    return out_msg
-
-
-def arbi2msg(arbi_msg):    
-    # (MultiRobotPath (RobotPath $robot_id $cur_vertex $goal_id), …)
-    # name1,start1,goal1;name2,start2,goal2, ...
-    gl = GLFactory.new_gl_from_gl_string(arbi_msg)
-    robotSet = []
-    if(gl.get_name() == "MultiRobotPath"):
-        for r in range(gl.get_expression_size()):
-            #(RobotPath $robot_id $cur_vertex $goal_id)
-            rp = str(gl.get_expression(r))
-            #remove paranthesis
-            rp_sp = rp.split('(')
-            rp_sp = rp_sp[1].split(')')[0]
-            #RobotPath $robot_id $cur_vertex $goal_id
-            rp_elems = rp_sp.split(" ")
-            # idx 1~3
-            #remove quotation marks from robot name
-            robot_name_sp = rp_elems[1].split('"')
-            robot_name = robot_name_sp[1]
-            robotSet.append(robot_name+robot_path_delim+rp_elems[2]+robot_path_delim+rp_elems[3])
-
-    return ';'.join(robotSet)
-
-def unique_goal_check(msg):
-    verdict = True
-    byRobots = msg.split(robot_robot_delim)
-    if(len(byRobots)>1):
+        #check if all goals are unique
+        if(unique_goal_check(msg) == False):
+            #goals are not unique. return fail
+            return msg2arbi("failed")
+        
+        agentsList = []
+        byRobots = msg.split(robot_robot_delim)
         for r in byRobots:
-            pivot_sp = r.split(robot_path_delim)
-            pivot_robot = pivot_sp[0]
-            pivot_goal = pivot_sp[2]
-            for c in byRobots:
-                compare_sp = c.split(robot_path_delim)
-                compare_robot = compare_sp[0]
-                compare_goal = compare_sp[2]
-                #skip itself
-                if(pivot_robot != compare_robot):
-                    if(pivot_goal == compare_goal):
-                        #goals are not unique
-                        verdict = False
+            elems = r.split(robot_path_delim)
+            #convert node name to map index coord.
+            start_xy = pt.graph2grid(elems[1],vertices_with_name)
+            goal_xy = pt.graph2grid(elems[2],vertices_with_name)
+            agentsList.append({'start':[start_xy[0],start_xy[1]], 'goal':[goal_xy[0],goal_xy[1]], 'name':elems[0]})
 
-    return verdict
-                
+        planResult = planning_loop(agentsList)
+        # planResult = handle_with_exceptions(agentsList)
+        if(planResult == -1):
+            return msg2arbi("failed")
 
-def handleReqest(msg_gl):
-    handle_start = time.time()
-    print(msg_gl)
-    #convert arbi Gl to custom format
-    msg = arbi2msg(msg_gl)
-    # name1,start1,goal1;name2,start2,goal2, ...
-    
-    #check if all goals are unique
-    if(unique_goal_check(msg) == False):
-        #goals are not unique. return fail
-        return msg2arbi("failed")
-    
-    agentsList = []
-    byRobots = msg.split(robot_robot_delim)
-    for r in byRobots:
-        elems = r.split(robot_path_delim)
-        #convert node name to map index coord.
-        start_xy = pt.graph2grid(elems[1],vertices_with_name)
-        goal_xy = pt.graph2grid(elems[2],vertices_with_name)
-        agentsList.append({'start':[start_xy[0],start_xy[1]], 'goal':[goal_xy[0],goal_xy[1]], 'name':elems[0]})
+        #serialize in string
+        msgs_by_agent = []
+        if(planResult != -1): #if not failed
+            for key in planResult:
+                msg = key + robot_path_delim + path_path_delim.join(planResult[key])
+                msgs_by_agent.append(msg)
 
-    #planResult = planning_loop(agentsList)
-    planResult = handle_with_exceptions(agentsList)
-    if(planResult == -1):
-        return msg2arbi("failed")
+        out_msg = robot_robot_delim.join(msgs_by_agent)
+        handle_end = time.time()
+        pic.printC("Event Hander spent: " + str(handle_end-handle_start) + " seconds", Warning)
 
-    #serialize in string
-    msgs_by_agent = []
-    if(planResult != -1): #if not failed
-        for key in planResult:
-            msg = key + robot_path_delim + path_path_delim.join(planResult[key])
-            msgs_by_agent.append(msg)
-
-    out_msg = robot_robot_delim.join(msgs_by_agent)
-    handle_end = time.time()
-    pic.printC("Event Hander spent: " + str(handle_end-handle_start) + " seconds", Warning)
-
-    #convert to arbi format
-    conv = msg2arbi(out_msg)
-    #return out_msg
-    return conv
-
+        #convert to arbi format
+        conv = msg2arbi(out_msg)
+        #return out_msg
+        return conv
 #use arbi end
 
 def planning_loop(agents_in,print_result=True):
@@ -479,12 +479,10 @@ def main():
     #start an agent
 
     #use arbi
-    
-    arbiAgent = aAgent(agent_name=arbiMAPF)
-    arbiAgent.execute()
-
-    arbiAgent.send("agent://www.arbi.com/receiveTest","Hi from MAPF");
-    
+    if USE_ARBI:    
+        arbiAgent = aAgent(agent_name=arbiMAPF)
+        arbiAgent.execute()
+        arbiAgent.send("agent://www.arbi.com/receiveTest","Hi from MAPF");
     #use arbi end
     
     #parser = argparse.ArgumentParser()
@@ -544,36 +542,35 @@ def main():
 
 
     #test run
-    
-    #a1 = ["a1","201","222"]
-    #a2 = ["a2","221","216"]
-    #b1 = ["b1","203","240"]
-    #b2 = ["b2","238","204"]
-    a1 = ["a1","233","239"]
-    a2 = ["a2","240","204"]
-    test_robots = []
-    test_robots.append(a1)
-    test_robots.append(a2)
-    #test_robots.append(b1)
-    #test_robots.append(b2)
+    if not USE_ARBI:
+        # a1 = ["a1","220","220"]
+        # a2 = ["a2","225","218"]
+        a1 = ["a1","218","218"]
+        a2 = ["a2","225","228"]
 
-    #a1_start = pt.graph2grid(a1[0],vertices_with_name)
-    #a2_start = pt.graph2grid(a2[0],vertices_with_name)
-    #a1_goal = pt.graph2grid(a1[1],vertices_with_name)
-    #a2_goal = pt.graph2grid(a2[1], vertices_with_name)
+        test_robots = []
+        test_robots.append(a1)    
+        test_robots.append(a2)
+        #test_robots.append(b1)
+        #test_robots.append(b2)
 
-    #agents_in.append({'start':a1_start, 'goal':a1_goal, 'name':'agent0'})
-    #agents_in.append({'start':a2_start, 'goal':a2_goal, 'name':'agent1'})
-    
-    msg_list = []
-    for r in test_robots:
-        msg_list.append(r[0] + robot_path_delim + r[1] + robot_path_delim + r[2])
+        #a1_start = pt.graph2grid(a1[0],vertices_with_name)
+        #a2_start = pt.graph2grid(a2[0],vertices_with_name)
+        #a1_goal = pt.graph2grid(a1[1],vertices_with_name)
+        #a2_goal = pt.graph2grid(a2[1], vertices_with_name)
 
-    msg = robot_robot_delim.join(msg_list)
-    
-    agents_in = msg2agentList(msg)
-    handle_with_exceptions(agents_in)
-    
+        #agents_in.append({'start':a1_start, 'goal':a1_goal, 'name':'agent0'})
+        #agents_in.append({'start':a2_start, 'goal':a2_goal, 'name':'agent1'})
+        
+        msg_list = []
+        for r in test_robots:
+            msg_list.append(r[0] + robot_path_delim + r[1] + robot_path_delim + r[2])
+
+        msg = robot_robot_delim.join(msg_list)
+        
+        agents_in = msg2agentList(msg)
+        # handle_with_exceptions(agents_in)
+        planning_loop(agents_in)
     #test run end
     
     while(1):

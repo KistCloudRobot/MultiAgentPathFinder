@@ -213,14 +213,15 @@ class Environment(object):
 
         node_name = grid2graph((state.location.x,state.location.y),self.vertices_with_name)
 
-        if node_name in self.edges_dict:
-            neighbor_nodes = self.edges_dict[node_name]
-
         #add current state
         # Wait action
         n = State(state.time + 1, state.location)
         if self.state_valid(n):
             neighbors.append(n)
+        
+        if node_name in self.edges_dict:
+            neighbor_nodes = self.edges_dict[node_name]
+
         for nn in neighbor_nodes:
             #Jeeho Edit
             #get corresponding graph node
@@ -263,7 +264,6 @@ class Environment(object):
         """
 
         return neighbors
-
 
     def get_first_conflict(self, solution):
         max_t = max([len(plan) for plan in solution.values()])
@@ -344,10 +344,30 @@ class Environment(object):
         goal = self.agent_dict[agent_name]["goal"]
         return fabs(state.location.x - goal.location.x) + fabs(state.location.y - goal.location.y)
 
-
     def is_at_goal(self, state, agent_name):
         goal_state = self.agent_dict[agent_name]["goal"]
         return state.is_equal_except_time(goal_state)
+
+    #Hyojeong Edit
+    def is_satisfy_constraints(self, agent_total_path, agent_name):
+        # check if agent stays at constraint location after reaching to the goal
+        if len(self.constraint_dict[agent_name].vertex_constraints) != 0:
+            # path should satisfy all vertex constraints
+            for vc in self.constraint_dict[agent_name].vertex_constraints:
+                # only consider the case for constraint's time is bigger than length of the path
+                if len(agent_total_path)-1 < vc.time:
+                    # agent's location at vc.time is same as goal location
+                    if agent_total_path[-1].location == vc.location:
+                        return False
+        return True
+    
+    #Hyojeong Edit
+    def no_wiggle(self, agent_total_path, agent_name):
+        if len(agent_total_path) >= 4:
+            for i in range(len(agent_total_path)-3):
+                if (agent_total_path[i].location == agent_total_path[i+2].location) and (agent_total_path[i+1].location == agent_total_path[i+3].location):
+                    return False
+        return True
 
     def make_agent_dict(self):
         for agent in self.agents:
@@ -414,6 +434,18 @@ class CBS(object):
         self.env = environment
         self.open_set = set()
         self.closed_set = set()
+    
+    def sum_of_cost(self, e):
+        return e.cost
+
+    def sum_of_move(self, e):
+        move = 0
+        for agent, path in e.solution.items():
+            for i in range(1, len(path)):
+                if path[i].location != path[i-1].location:
+                    move += 1
+        return move
+
     def search(self,print_ = True):
         start = HighLevelNode()
         # TODO: Initialize it in a better way
@@ -433,6 +465,8 @@ class CBS(object):
 
         while self.open_set:
             P = min(self.open_set)
+            # Hyojeong Edit
+            # P = min(self.open_set, key=lambda x: (self.sum_of_cost(x), self.sum_of_move(x)))
             self.open_set -= {P}
             self.closed_set |= {P}
 

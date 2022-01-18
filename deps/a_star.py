@@ -11,6 +11,8 @@ class AStar():
         self.agent_dict = env.agent_dict
         self.admissible_heuristic = env.admissible_heuristic
         self.is_at_goal = env.is_at_goal
+        self.is_satisfy_constraints = env.is_satisfy_constraints
+        self.no_wiggle = env.no_wiggle
         self.get_neighbors = env.get_neighbors
         self.env = env
 
@@ -39,6 +41,7 @@ class AStar():
         f_score = {} 
 
         f_score[initial_state] = self.admissible_heuristic(initial_state, agent_name)
+        # f_score[initial_state] = 0
 
         n_lim = self.env.dimension[0]*self.env.dimension[1]
         n_count = 0
@@ -49,8 +52,10 @@ class AStar():
             temp_dict = {open_item:f_score.setdefault(open_item, float("inf")) for open_item in open_set}
             current = min(temp_dict, key=temp_dict.get)
 
-            if self.is_at_goal(current, agent_name):
-                return self.reconstruct_path(came_from, current)
+            # Hyojeong Edit - add constraint satisfy condition
+            agent_total_path = self.reconstruct_path(came_from, current)
+            if self.is_at_goal(current, agent_name) and self.is_satisfy_constraints(agent_total_path, agent_name):
+                return agent_total_path
 
             open_set -= {current}
             closed_set |= {current}
@@ -72,5 +77,6 @@ class AStar():
 
                 g_score[neighbor] = tentative_g_score
                 f_score[neighbor] = g_score[neighbor] + self.admissible_heuristic(neighbor, agent_name)
+                # f_score[neighbor] = g_score[neighbor]
         return False
 
