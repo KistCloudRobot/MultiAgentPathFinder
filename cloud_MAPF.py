@@ -19,7 +19,7 @@ import deps.planningTools as pt
 import deps.printInColor as pic
 #import handler_tools as ht
 
-USE_ARBI = True
+USE_ARBI = False
 
 #use arbi
 if USE_ARBI:
@@ -543,16 +543,19 @@ def main():
 
     #test run
     if not USE_ARBI:
-        # a1 = ["a1","220","220"]
-        # a2 = ["a2","225","218"]
-        a1 = ["a1","218","218"]
-        a2 = ["a2","225","228"]
+
+        a1 = ["a1","102","23"]
+        a2 = ["a2","103","14"]
+        a3 = ["a3","101","15"]
+        a4 = ["a4","104","10"]
+        b1 = ["b1","1046","29"]
 
         test_robots = []
         test_robots.append(a1)    
         test_robots.append(a2)
-        #test_robots.append(b1)
-        #test_robots.append(b2)
+        test_robots.append(a3)
+        test_robots.append(a4)
+        test_robots.append(b1)
 
         #a1_start = pt.graph2grid(a1[0],vertices_with_name)
         #a2_start = pt.graph2grid(a2[0],vertices_with_name)
