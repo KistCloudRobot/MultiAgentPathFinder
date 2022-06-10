@@ -4,6 +4,8 @@ AStar search
 
 author: Ashwin Bose (@atb033)
 
+modifed: Hyojeong Kim (@rlagywjd802)
+
 """
 
 class AStar():
@@ -22,6 +24,16 @@ class AStar():
             current = came_from[current]
             total_path.append(current)
         return total_path[::-1]
+    
+    # Hyojeong Edit
+    def sum_of_move(self, came_from, current):
+        move = 0
+        total_path = self.reconstruct_path(came_from, current)
+        for ii in range(1, len(total_path)):
+            if total_path[ii].location != total_path[ii-1].location:
+                move += 1
+        return move
+    ###########################
 
     def search(self, agent_name):
         """
@@ -38,45 +50,55 @@ class AStar():
         g_score = {} 
         g_score[initial_state] = 0
 
+        # Hyojeong Edit 
+        g1_score = {} 
+        g1_score[initial_state] = 0
+        ###########################
+
         f_score = {} 
-
         f_score[initial_state] = self.admissible_heuristic(initial_state, agent_name)
-        # f_score[initial_state] = 0
-
+        
         n_lim = self.env.dimension[0]*self.env.dimension[1]
         n_count = 0
         while open_set:
             n_count += 1
             if(n_count > n_lim): #consider failed
                 break;
-            temp_dict = {open_item:f_score.setdefault(open_item, float("inf")) for open_item in open_set}
-            current = min(temp_dict, key=temp_dict.get)
+            temp_dict = {open_item:f_score.setdefault(open_item, float("inf")) for open_item in open_set}   
+
+            current = min(temp_dict, key=lambda x: (temp_dict.get(x), g1_score.get(x)))
 
             # Hyojeong Edit - add constraint satisfy condition
             agent_total_path = self.reconstruct_path(came_from, current)
             if self.is_at_goal(current, agent_name) and self.is_satisfy_constraints(agent_total_path, agent_name):
                 return agent_total_path
+            ###########################
 
             open_set -= {current}
             closed_set |= {current}
 
             neighbor_list = self.get_neighbors(current)
-
             for neighbor in neighbor_list:
                 if neighbor in closed_set:
                     continue
                 
+                # Hyojeong Edit - add g1_score
                 tentative_g_score = g_score.setdefault(current, float("inf")) + step_cost
+                tentative_g1_score = self.sum_of_move(came_from, current)
 
                 if neighbor not in open_set:
                     open_set |= {neighbor}
-                elif tentative_g_score >= g_score.setdefault(neighbor, float("inf")):
+                elif tentative_g_score > g_score.setdefault(neighbor, float("inf")):
                     continue
+                elif tentative_g_score == g_score.setdefault(neighbor, float("inf")):
+                    if tentative_g1_score >= g1_score.setdefault(neighbor, float("inf")):
+                        continue
 
                 came_from[neighbor] = current
 
                 g_score[neighbor] = tentative_g_score
+                g1_score[neighbor] = tentative_g1_score
                 f_score[neighbor] = g_score[neighbor] + self.admissible_heuristic(neighbor, agent_name)
-                # f_score[neighbor] = g_score[neighbor]
-        return False
+                ###########################
 
+        return False
