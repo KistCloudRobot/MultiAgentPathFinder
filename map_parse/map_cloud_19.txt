@@ -1,0 +1,546 @@
+Vertex
+	name 104
+	type 0
+	pos 13.45 0.0 7.75
+	edge 1004
+Vertex
+	name 101
+	type 0
+	pos 13.45 0.0 12.15
+	edge 1001
+Vertex
+	name 103
+	type 0
+	pos 13.45 0.0 9.15
+	edge 1003
+Vertex
+	name 102
+	type 0
+	pos 13.45 0.0 10.75
+	edge 1002
+Vertex
+	name 1001
+	type 0
+	pos 16 0.0 12.15
+	edge 101
+	edge 1002
+Vertex
+	name 1002
+	type 0
+	pos 16 0.0 10.75
+	edge 102
+	edge 1005
+	edge 1001
+Vertex
+	name 1003
+	type 0
+	pos 16 0.0 9.15
+	edge 103
+	edge 1004
+	edge 1005
+Vertex
+	name 1004
+	type 0
+	pos 16 0.0 7.75
+	edge 104
+	edge 1003
+	edge 1027
+Vertex
+	name 1005
+	type 0
+	pos 16 0.0 9.9
+	edge 1002
+	edge 1003
+	edge 1006
+Vertex
+	name 1006
+	type 0
+	pos 20.5 0.0 9.9
+	edge 1005
+	edge 1007
+	edge 1
+Vertex
+	name 1007
+	type 0
+	pos 21.9 0.0 9.9
+	edge 1006
+	edge 1008
+	edge 2
+Vertex
+	name 1008
+	type 0
+	pos 23.4 0.0 9.9
+	edge 1007
+	edge 1009
+Vertex
+	name 1010
+	type 0
+	pos 24.8 0.0 9.9
+	edge 1011
+	edge 1009
+Vertex
+	name 1011
+	type 0
+	pos 26.3 0.0 9.9
+	edge 1012
+	edge 1010
+	edge 3
+Vertex
+	name 1012
+	type 0
+	pos 27.7 0.0 9.9
+	edge 1013
+	edge 1011
+	edge 4
+Vertex
+	name 1013
+	type 0
+	pos 29.2 0.0 9.9
+	edge 1012
+	edge 1014
+Vertex
+	name 1015
+	type 0
+	pos 30.6 0.0 9.9
+	edge 1016
+	edge 1014
+Vertex
+	name 1016
+	type 0
+	pos 32.1 0.0 9.9
+	edge 1017
+	edge 1015
+	edge 5
+Vertex
+	name 1017
+	type 0
+	pos 33.5 0.0 9.9
+	edge 1018
+	edge 1016
+	edge 6
+Vertex
+	name 1018
+	type 0
+	pos 35 0.0 9.9
+	edge 1019
+	edge 1017
+	edge 7
+Vertex
+	name 1019
+	type 0
+	pos 36.4 0.0 9.9
+	edge 1020
+	edge 1018
+	edge 8
+Vertex
+	name 1020
+	type 0
+	pos 37.9 0.0 9.9
+	edge 1021
+	edge 1019
+	edge 9
+Vertex
+	name 1021
+	type 0
+	pos 39.3 0.0 9.9
+	edge 1020
+	edge 10
+Vertex
+	name 1027
+	type 0
+	pos 16 0.0 4.5
+	edge 1004
+	edge 1028
+Vertex
+	name 1028
+	type 0
+	pos 20.5 0.0 4.5
+	edge 1027
+	edge 1029
+	edge 11
+	edge 17
+Vertex
+	name 1029
+	type 0
+	pos 21.9 0.0 4.5
+	edge 1028
+	edge 1030
+	edge 12
+	edge 18
+Vertex
+	name 1030
+	type 0
+	pos 23.4 0.0 4.5
+	edge 1029
+	edge 1031
+	edge 19
+Vertex
+	name 1032
+	type 0
+	pos 24.8 0.0 4.5
+	edge 1033
+	edge 1031
+	edge 20
+Vertex
+	name 1033
+	type 0
+	pos 26.3 0.0 4.5
+	edge 1032
+	edge 1034
+	edge 13
+	edge 21
+Vertex
+	name 1034
+	type 0
+	pos 27.7 0.0 4.5
+	edge 1033
+	edge 1035
+	edge 14
+	edge 22
+Vertex
+	name 1035
+	type 0
+	pos 29.2 0.0 4.5
+	edge 1034
+	edge 1036
+	edge 23
+Vertex
+	name 1037
+	type 0
+	pos 30.6 0.0 4.5
+	edge 1038
+	edge 1036
+	edge 24
+Vertex
+	name 1038
+	type 0
+	pos 32.1 0.0 4.5
+	edge 1037
+	edge 1039
+	edge 15
+	edge 25
+Vertex
+	name 1039
+	type 0
+	pos 33.5 0.0 4.5
+	edge 1038
+	edge 16
+	edge 26
+	edge 1040
+Vertex
+	name 1041
+	type 0
+	pos 35.3 0.0 5
+	edge 27
+	edge 1040
+Vertex
+	name 1043
+	type 0
+	pos 39.3 0.0 4
+	edge 1044
+	edge 1047
+	edge 1042
+	edge 1051
+Vertex
+	name 1044
+	type 0
+	pos 40.8 0.0 4
+	edge 1043
+	edge 1045
+	edge 1048
+	edge 1052
+Vertex
+	name 1045
+	type 0
+	pos 42.2 0.0 4
+	edge 1044
+	edge 1046
+	edge 1049
+	edge 1053
+Vertex
+	name 1046
+	type 0
+	pos 44 0.0 4
+	edge 1045
+	edge 1050
+Vertex
+	name 1
+	type 1
+	pos 20.5 0.0 8.1
+	edge 1006
+Vertex
+	name 2
+	type 1
+	pos 21.9 0.0 8.1
+	edge 1007
+Vertex
+	name 3
+	type 1
+	pos 26.3 0.0 8.1
+	edge 1011
+Vertex
+	name 4
+	type 1
+	pos 27.7 0.0 8.1
+	edge 1012
+Vertex
+	name 5
+	type 1
+	pos 32.1 0.0 8.1
+	edge 1016
+Vertex
+	name 6
+	type 1
+	pos 33.5 0.0 8.1
+	edge 1017
+Vertex
+	name 7
+	type 1
+	pos 35 0.0 8.1
+	edge 1018
+Vertex
+	name 8
+	type 1
+	pos 36.4 0.0 8.1
+	edge 1019
+Vertex
+	name 9
+	type 1
+	pos 37.9 0.0 8.1
+	edge 1020
+Vertex
+	name 10
+	type 1
+	pos 39.3 0.0 8.1
+	edge 1021
+Vertex
+	name 11
+	type 1
+	pos 20.5 0.0 6.7
+	edge 1028
+Vertex
+	name 12
+	type 1
+	pos 21.9 0.0 6.7
+	edge 1029
+Vertex
+	name 13
+	type 1
+	pos 26.3 0.0 6.7
+	edge 1033
+Vertex
+	name 14
+	type 1
+	pos 27.7 0.0 6.7
+	edge 1034
+Vertex
+	name 15
+	type 1
+	pos 32.1 0.0 6.7
+	edge 1038
+Vertex
+	name 16
+	type 1
+	pos 33.5 0.0 6.7
+	edge 1039
+Vertex
+	name 17
+	type 1
+	pos 20.5 0.0 2.4
+	edge 1028
+Vertex
+	name 18
+	type 1
+	pos 21.9 0.0 2.4
+	edge 1029
+Vertex
+	name 19
+	type 1
+	pos 23.4 0.0 2.4
+	edge 1030
+Vertex
+	name 20
+	type 1
+	pos 24.8 0.0 2.4
+	edge 1032
+Vertex
+	name 21
+	type 1
+	pos 26.3 0.0 2.4
+	edge 1033
+Vertex
+	name 22
+	type 1
+	pos 27.7 0.0 2.4
+	edge 1034
+Vertex
+	name 23
+	type 1
+	pos 29.2 0.0 2.4
+	edge 1035
+Vertex
+	name 24
+	type 1
+	pos 30.6 0.0 2.4
+	edge 1037
+Vertex
+	name 25
+	type 1
+	pos 32.1 0.0 2.4
+	edge 1038
+Vertex
+	name 26
+	type 1
+	pos 33.5 0.0 2.4
+	edge 1039
+Vertex
+	name 29
+	type 1
+	pos 39.3 0.0 6.7
+	edge 1047
+Vertex
+	name 30
+	type 1
+	pos 40.8 0.0 6.7
+	edge 1048
+Vertex
+	name 31
+	type 1
+	pos 42.2 0.0 6.7
+	edge 1049
+Vertex
+	name 32
+	type 1
+	pos 39.3 0.0 2.4
+	edge 1051
+Vertex
+	name 33
+	type 1
+	pos 40.8 0.0 2.4
+	edge 1052
+Vertex
+	name 34
+	type 1
+	pos 42.2 0.0 2.4
+	edge 1053
+Vertex
+	name 35
+	type 1
+	pos 44 0.0 6.7
+	edge 1050
+Vertex
+	name 27
+	type 1
+	pos 36.4 0.0 5
+	edge 1041
+Vertex
+	name 28
+	type 1
+	pos 36.4 0.0 4
+	edge 1042
+Vertex
+	name 1050
+	type 0
+	pos 44 0.0 6
+	edge 35
+	edge 1046
+Vertex
+	name 1049
+	type 0
+	pos 42.2 0.0 6
+	edge 31
+	edge 1045
+Vertex
+	name 1048
+	type 0
+	pos 40.8 0.0 6
+	edge 30
+	edge 1044
+Vertex
+	name 1047
+	type 0
+	pos 39.3 0.0 6
+	edge 29
+	edge 1043
+Vertex
+	name 1042
+	type 0
+	pos 37.8 0.0 4
+	edge 28
+	edge 1043
+Vertex
+	name 1051
+	type 0
+	pos 39.3 0.0 3.1
+	edge 1043
+	edge 32
+Vertex
+	name 1052
+	type 0
+	pos 40.8 0.0 3.1
+	edge 33
+	edge 1044
+Vertex
+	name 1053
+	type 0
+	pos 42.2 0.0 3.1
+	edge 1045
+	edge 34
+Vertex
+	name 1009
+	type 0
+	pos 24.1 0.0 9.9
+	edge 1010
+	edge 1008
+	edge 1023
+Vertex
+	name 1031
+	type 0
+	pos 24.1 0.0 4.5
+	edge 1030
+	edge 1032
+	edge 1024
+Vertex
+	name 1014
+	type 0
+	pos 29.9 0.0 9.9
+	edge 1015
+	edge 1013
+	edge 1025
+Vertex
+	name 1036
+	type 0
+	pos 29.9 0.0 4.5
+	edge 1035
+	edge 1037
+	edge 1026
+Vertex
+	name 1040
+	type 0
+	pos 34.3 0.0 5
+	edge 1039
+	edge 1041
+Vertex
+	name 1023
+	type 0
+	pos 24.1 0.0 8.1
+	edge 1009
+	edge 1024
+Vertex
+	name 1024
+	type 0
+	pos 24.1 0.0 6.7
+	edge 1023
+	edge 1031
+Vertex
+	name 1025
+	type 0
+	pos 29.9 0.0 8.1
+	edge 1014
+	edge 1026
+Vertex
+	name 1026
+	type 0
+	pos 29.9 0.0 6.7
+	edge 1025
+	edge 1036
