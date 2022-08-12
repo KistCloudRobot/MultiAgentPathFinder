@@ -229,16 +229,9 @@ Vertex
 	type 0
 	pos 167.7 0.0 143.25
 	edge 125
-	edge 123
+	edge 122
 	edge 37
 	edge 53
-Vertex
-	name 123
-	type 0
-	pos 170 0.0 143.25
-	edge 124
-	edge 160
-	edge 122
 Vertex
 	name 10
 	type 1
@@ -646,7 +639,7 @@ Vertex
 	type 0
 	pos 170 0.0 145.1
 	edge 121
-	edge 123
+	edge 124
 	edge 159
 Vertex
 	name 12
