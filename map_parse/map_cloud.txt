@@ -57,28 +57,16 @@ Vertex
 	name 107
 	type 0
 	pos 153.2 0.0 148.7
-	edge 108
 	edge 106
 	edge 15
-Vertex
-	name 108
-	type 0
-	pos 154.7 0.0 148.7
-	edge 107
-	edge 109
-Vertex
-	name 110
-	type 0
-	pos 156.1 0.0 148.7
-	edge 111
 	edge 109
 Vertex
 	name 111
 	type 0
 	pos 157.6 0.0 148.7
 	edge 112
-	edge 110
 	edge 16
+	edge 109
 Vertex
 	name 112
 	type 0
@@ -229,15 +217,8 @@ Vertex
 	type 0
 	pos 167.7 0.0 143.25
 	edge 125
-	edge 123
 	edge 37
 	edge 53
-Vertex
-	name 123
-	type 0
-	pos 170 0.0 143.25
-	edge 124
-	edge 160
 	edge 122
 Vertex
 	name 10
@@ -407,7 +388,7 @@ Vertex
 Vertex
 	name 121
 	type 0
-	pos 170 0.0 147
+	pos 170 0.0 145
 	edge 120
 	edge 158
 	edge 122
@@ -423,9 +404,9 @@ Vertex
 	name 109
 	type 0
 	pos 155.4 0.0 148.7
-	edge 110
-	edge 108
 	edge 153
+	edge 107
+	edge 111
 Vertex
 	name 133
 	type 0
@@ -444,13 +425,13 @@ Vertex
 Vertex
 	name 153
 	type 0
-	pos 155.4 0.0 146.9
+	pos 155.4 0.0 146.8
 	edge 109
 	edge 154
 Vertex
 	name 154
 	type 0
-	pos 155.4 0.0 145.5
+	pos 155.4 0.0 145.1
 	edge 153
 	edge 133
 Vertex
@@ -491,12 +472,12 @@ Vertex
 Vertex
 	name 500
 	type 2
-	pos 173.4 0.0 148.2
+	pos 173.4 0.0 146.8
 	edge 157
 Vertex
 	name 501
 	type 2
-	pos 173.4 0.0 147
+	pos 173.4 0.0 145
 	edge 158
 Vertex
 	name 117
@@ -517,25 +498,19 @@ Vertex
 	type 0
 	pos 170 0.0 148.7
 	edge 118
-	edge 155
 	edge 120
-Vertex
-	name 155
-	type 0
-	pos 170 0.0 150.3
-	edge 119
 	edge 156
 Vertex
 	name 120
 	type 0
-	pos 170 0.0 148.2
+	pos 170 0.0 146.8
 	edge 121
 	edge 119
 	edge 157
 Vertex
 	name 157
 	type 0
-	pos 171.9 0.0 148.2
+	pos 171.9 0.0 146.8
 	edge 500
 	edge 120
 Vertex
@@ -589,14 +564,9 @@ Vertex
 Vertex
 	name 158
 	type 0
-	pos 171.9 0.0 147
+	pos 171.9 0.0 145
 	edge 501
 	edge 121
-Vertex
-	name 160
-	type 0
-	pos 172.4 0.0 143.25
-	edge 123
 Vertex
 	name 2
 	type 1
@@ -634,20 +604,20 @@ Vertex
 Vertex
 	name 156
 	type 0
-	pos 172.4 0.0 150.3
-	edge 155
+	pos 171.9 0.0 148.7
+	edge 119
 Vertex
 	name 159
 	type 0
-	pos 172.4 0.0 145.1
+	pos 171.9 0.0 143.25
 	edge 122
 Vertex
 	name 122
 	type 0
-	pos 170 0.0 145.1
+	pos 170 0.0 143.25
 	edge 121
-	edge 123
 	edge 159
+	edge 124
 Vertex
 	name 12
 	type 1
