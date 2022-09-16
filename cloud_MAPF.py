@@ -19,7 +19,7 @@ import deps.planningTools as pt
 import deps.printInColor as pic
 #import handler_tools as ht
 
-USE_ARBI = False
+USE_ARBI = True
 
 #use arbi
 if USE_ARBI:
