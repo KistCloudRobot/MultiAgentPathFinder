@@ -96,7 +96,7 @@ if USE_ARBI:
             out_msg = "(" + header + " " + msg + ")"
         else:
             # result = agent1:219-220-221-222-223-224-225-15
-            # (MultiRobotPath (RobotPath $robot_id (path $v_id1 $v_id2 $v_id3, ...)), …)
+            # (MultiRobotPath (RobotPath $robot_id (path $v_id1 $v_id2 $v_id3, ...)), ???)
             out_msg = "(" + header + " "
             pathList = []
             if(len(msg)>0):        
@@ -114,7 +114,7 @@ if USE_ARBI:
 
 
     def arbi2msg(arbi_msg):    
-        # (MultiRobotPath (RobotPath $robot_id $cur_vertex $goal_id), …)
+        # (MultiRobotPath (RobotPath $robot_id $cur_vertex $goal_id), ???)
         # name1,start1,goal1;name2,start2,goal2, ...
         gl = GLFactory.new_gl_from_gl_string(arbi_msg)
         robotSet = []
@@ -543,31 +543,25 @@ def main():
 
     #test run
     if not USE_ARBI:
-        # # case1
-        # a1 = ["a1","210","226"]
-        # a2 = ["a2","218","225"]
 
-        # # case2
-        # a1 = ["a1","201","219"]
-        # a2 = ["a2","227","225"]
+        # map version 9
+        # a1 = ["a1","102","23"]
+        # a2 = ["a2","103","14"]
+        # a3 = ["a3","101","15"]
+        # a4 = ["a4","104","10"]
+        # b1 = ["b1","1046","29"]
 
-        # # case3
-        # a1 = ["a1","225","220"]
-        # a2 = ["a2","219","226"]
-
-        # # case4
-        # a1 = ["a1","219","226"]
-        # a2 = ["a2","225","221"]
-
-        # case5
-        a1 = ["a1","201","210"]
-        a2 = ["a2","226","209"]
+        # map version 10
+        a1 = ["a1","143","132"]
+        a2 = ["a2","142","152"]
+        a3 = ["a3","157","115"]
+        a4 = ["a4","142","150"]
 
         test_robots = []
         test_robots.append(a1)    
         test_robots.append(a2)
-        #test_robots.append(b1)
-        #test_robots.append(b2)
+        test_robots.append(a3)
+        test_robots.append(a4)
 
         #a1_start = pt.graph2grid(a1[0],vertices_with_name)
         #a2_start = pt.graph2grid(a2[0],vertices_with_name)
