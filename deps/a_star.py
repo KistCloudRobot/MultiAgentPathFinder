@@ -66,7 +66,9 @@ class AStar():
                 break;
             temp_dict = {open_item:f_score.setdefault(open_item, float("inf")) for open_item in open_set}   
 
+            # Hyojeong Edit 
             current = min(temp_dict, key=lambda x: (temp_dict.get(x), g1_score.get(x)))
+            ###########################
 
             # Hyojeong Edit - add constraint satisfy condition
             agent_total_path = self.reconstruct_path(came_from, current)
