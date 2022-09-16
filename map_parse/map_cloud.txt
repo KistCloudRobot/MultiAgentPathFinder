@@ -217,15 +217,9 @@ Vertex
 	type 0
 	pos 167.7 0.0 143.25
 	edge 125
-<<<<<<< HEAD
 	edge 37
 	edge 53
 	edge 122
-=======
-	edge 122
-	edge 37
-	edge 53
->>>>>>> 6f6aa4f9bb962f4dbf30346b7db55480c46e6715
 Vertex
 	name 10
 	type 1
@@ -622,10 +616,6 @@ Vertex
 	type 0
 	pos 170 0.0 143.25
 	edge 121
-<<<<<<< HEAD
-=======
-	edge 124
->>>>>>> 6f6aa4f9bb962f4dbf30346b7db55480c46e6715
 	edge 159
 	edge 124
 Vertex
