@@ -1,18 +1,18 @@
 agents:
 -   start: [8, 1] 
     goal: [2, 2] 
-    name: a1
+    name: AMR_LIFT1
 -   start: [5, 5] 
     goal: [3, 2] 
-    name: a2
+    name: AMR_LIFT2
 -   start: [5, 9] 
     goal: [9, 4] 
-    name: a3
+    name: AMR_LIFT3
 -   start: [6, 9] 
     goal: [9, 3] 
-    name: a4
+    name: AMR_LIFT4
 map:
-    dimensions: [27, 7]
+    dimensions: [25, 6]
     vertices:
     - !!python/tuple [0,5,"4","station"]
     - !!python/tuple [1,5,"145","node"]
