@@ -155,31 +155,17 @@ Vertex
 	type 0
 	pos 153.2 0.0 143.25
 	edge 136
-	edge 134
 	edge 29
 	edge 43
-Vertex
-	name 134
-	type 0
-	pos 154.7 0.0 143.25
-	edge 135
 	edge 133
-	edge 44
-Vertex
-	name 132
-	type 0
-	pos 156.1 0.0 143.25
-	edge 131
-	edge 133
-	edge 45
 Vertex
 	name 131
 	type 0
 	pos 157.6 0.0 143.25
-	edge 132
 	edge 130
 	edge 30
 	edge 46
+	edge 133
 Vertex
 	name 130
 	type 0
@@ -331,16 +317,6 @@ Vertex
 	pos 153.2 0.0 141
 	edge 135
 Vertex
-	name 44
-	type 1
-	pos 154.7 0.0 141
-	edge 134
-Vertex
-	name 45
-	type 1
-	pos 156.1 0.0 141
-	edge 132
-Vertex
 	name 46
 	type 1
 	pos 157.6 0.0 141
@@ -411,9 +387,9 @@ Vertex
 	name 133
 	type 0
 	pos 155.4 0.0 143.25
-	edge 134
-	edge 132
 	edge 154
+	edge 135
+	edge 131
 Vertex
 	name 129
 	type 0
@@ -522,21 +498,21 @@ Vertex
 Vertex
 	name 147
 	type 0
-	pos 136.3 0.0 147.3
+	pos 136.5 0.0 147.3
 	edge 146
 	edge 148
 	edge 144
 Vertex
 	name 144
 	type 0
-	pos 136.3 0.0 150.3
+	pos 136.5 0.0 150.3
 	edge 143
 	edge 145
 	edge 147
 Vertex
 	name 145
 	type 0
-	pos 133.5 0.0 150.3
+	pos 133.8 0.0 150.3
 	edge 144
 	edge 4
 Vertex
@@ -548,18 +524,18 @@ Vertex
 Vertex
 	name 148
 	type 0
-	pos 133.5 0.0 147.3
+	pos 133.8 0.0 147.3
 	edge 147
 	edge 3
 Vertex
 	name 3
 	type 1
-	pos 132.9 0.0 147.3
+	pos 131.7 0.0 147.3
 	edge 148
 Vertex
 	name 4
 	type 1
-	pos 132.9 0.0 150.3
+	pos 131.7 0.0 150.3
 	edge 145
 Vertex
 	name 158
@@ -580,13 +556,13 @@ Vertex
 Vertex
 	name 152
 	type 0
-	pos 134.4 0.0 141.9
+	pos 135.4 0.0 141.9
 	edge 1
 	edge 151
 Vertex
 	name 150
 	type 0
-	pos 134.4 0.0 143.2
+	pos 135.4 0.0 143.2
 	edge 149
 	edge 2
 Vertex

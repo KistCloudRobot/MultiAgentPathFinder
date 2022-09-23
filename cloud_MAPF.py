@@ -19,7 +19,7 @@ import deps.planningTools as pt
 import deps.printInColor as pic
 #import handler_tools as ht
 
-USE_ARBI = True
+USE_ARBI = False
 
 robot_path_delim = ':'
 robot_robot_delim = ';'
@@ -285,10 +285,10 @@ def main():
         # b1 = ["b1","1046","29"]
 
         # map version 10
-        a1 = ["AMR_LIFT1","116","156"]
-        a2 = ["AMR_LIFT2","157","117"]
-        a3 = ["AMR_LIFT3","146","105"]
-        a4 = ["AMR_LIFT4","158","113"]
+        a1 = ["AMR_LIFT1","146","127"]
+        a2 = ["AMR_LIFT2","114","145"]
+        a3 = ["AMR_LIFT3","152","136"]
+        a4 = ["AMR_LIFT4","133","102"]
 
         test_robots = []
         test_robots.append(a1)    
