@@ -285,10 +285,10 @@ def main():
         # b1 = ["b1","1046","29"]
 
         # map version 10
-        a1 = ["AMR_LIFT1","146","127"]
+        a1 = ["AMR_LIFT1","146","103"]
         a2 = ["AMR_LIFT2","114","145"]
-        a3 = ["AMR_LIFT3","152","136"]
-        a4 = ["AMR_LIFT4","133","102"]
+        a3 = ["AMR_LIFT3","152","124"]
+        a4 = ["AMR_LIFT4","135","102"]
 
         test_robots = []
         test_robots.append(a1)    

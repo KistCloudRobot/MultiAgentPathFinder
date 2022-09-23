@@ -19,6 +19,7 @@ map:
     - !!python/tuple [2,5,"144","node"]
     - !!python/tuple [3,5,"143","node"]
     - !!python/tuple [4,5,"100","node"]
+    - !!python/tuple [2,4,"nan","node"]
     - !!python/tuple [4,4,"101","node"]
     - !!python/tuple [5,4,"102","node"]
     - !!python/tuple [6,4,"103","node"]
