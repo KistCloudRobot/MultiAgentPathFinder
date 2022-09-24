@@ -19,7 +19,7 @@ import deps.planningTools as pt
 import deps.printInColor as pic
 #import handler_tools as ht
 
-USE_ARBI = 
+USE_ARBI = True
 
 robot_path_delim = ':'
 robot_robot_delim = ';'
