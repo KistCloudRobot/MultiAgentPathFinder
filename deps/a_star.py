@@ -59,15 +59,19 @@ class AStar():
         f_score[initial_state] = self.admissible_heuristic(initial_state, agent_name)
         
         n_lim = self.env.dimension[0]*self.env.dimension[1]
+        n_lim1 = (self.env.dimension[0]+self.env.dimension[1])*2
         n_count = 0
         while open_set:
             n_count += 1
-            if(n_count > n_lim): #consider failed
-                break;
-            temp_dict = {open_item:f_score.setdefault(open_item, float("inf")) for open_item in open_set}   
+            # if(n_count > n_lim): #consider failed
+            #     break
+            temp_dict = {open_item:f_score.setdefault(open_item, float("inf")) for open_item in open_set}
 
             # Hyojeong Edit 
             current = min(temp_dict, key=lambda x: (temp_dict.get(x), g1_score.get(x)))
+            if (temp_dict[current]) > n_lim1:
+                print("{} exceed limit!!!".format(agent_name))
+                break
             ###########################
 
             # Hyojeong Edit - add constraint satisfy condition
@@ -102,5 +106,5 @@ class AStar():
                 g1_score[neighbor] = tentative_g1_score
                 f_score[neighbor] = g_score[neighbor] + self.admissible_heuristic(neighbor, agent_name)
                 ###########################
-
+        
         return False
