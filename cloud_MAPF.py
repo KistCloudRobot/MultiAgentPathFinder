@@ -296,11 +296,11 @@ def main():
         # a3 = ["AMR_LIFT3", "149", "140"]
         # a4 = ["AMR_LIFT4", "115", "148"]
         
-        # # case3
-        # a1 = ["AMR_LIFT1","145","118"]
-        # a2 = ["AMR_LIFT2","116","115"]
-        # a3 = ["AMR_LIFT3","150","150"]
-        # a4 = ["AMR_LIFT4","125","104"]
+        # case3
+        a1 = ["AMR_LIFT1","145","118"]
+        a2 = ["AMR_LIFT2","116","115"]
+        a3 = ["AMR_LIFT3","150","150"]
+        a4 = ["AMR_LIFT4","125","104"]
 
         # # case4
         # a1 = ["AMR_LIFT1","145","105"]
@@ -313,11 +313,6 @@ def main():
         # a2 = ["AMR_LIFT2","156","148"]
         # a3 = ["AMR_LIFT3","114","146"]
         # a4 = ["AMR_LIFT4","122","150"]
-
-        a1 = ["AMR_LIFT1","143","111"]
-        a2 = ["AMR_LIFT2","104","107"]
-        a3 = ["AMR_LIFT3","157","131"]
-        a4 = ["AMR_LIFT4","125","128"]
 
         test_robots = []
         test_robots.append(a1)    
