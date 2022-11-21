@@ -21,6 +21,8 @@ import deps.printInColor as pic
 
 USE_ARBI = True
 
+sys.path.append("/home/kist/pythonProject/Python-mcArbiFramework")
+
 robot_path_delim = ':'
 robot_robot_delim = ';'
 path_path_delim = '-'
@@ -36,7 +38,6 @@ brokerURL = "tcp://192.168.100.10:61316"
 
 #use arbi
 if USE_ARBI:
-    sys.path.append("/home/kist/pythonProject/Python-mcArbiFramework")
     from arbi_agent.agent.arbi_agent import ArbiAgent
     from arbi_agent.configuration import BrokerType
     from arbi_agent.agent import arbi_agent_executor
