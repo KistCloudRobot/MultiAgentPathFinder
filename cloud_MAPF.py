@@ -25,20 +25,25 @@ robot_path_delim = ':'
 robot_robot_delim = ';'
 path_path_delim = '-'
 
-arbiMAPF = "agent://www.arbi.com/MAPF"
+arbiMAPF = "agent://www.arbi.com/MultiAgentPathFinder"
 
 args = {"param":"yaml/input.yaml","output":"yaml/output.yaml"}
 MAP_CLOUD_PATH = "map_parse/map_cloud.txt"
 
+# brokerURL = "tcp://127.0.0.1:61316"
+# brokerURL = "tcp://172.16.165.141:61316"
+brokerURL = "tcp://192.168.100.10:61316"
+
 #use arbi
 if USE_ARBI:
-    from python_arbi_framework.arbi_agent.agent.arbi_agent import ArbiAgent
-    from python_arbi_framework.arbi_agent.configuration import BrokerType
-    from python_arbi_framework.arbi_agent.agent import arbi_agent_excutor
+    sys.path.append("/home/kist/pythonProject/Python-mcArbiFramework")
+    from arbi_agent.agent.arbi_agent import ArbiAgent
+    from arbi_agent.configuration import BrokerType
+    from arbi_agent.agent import arbi_agent_executor
     from arbi_agent.model import generalized_list_factory as GLFactory
 
     class aAgent(ArbiAgent):
-        def __init__(self, agent_name, broker_url = "tcp://127.0.0.1:61616"):
+        def __init__(self, agent_name, broker_url = "tcp://127.0.0.1:61316"):
             super().__init__()
             self.broker_url = broker_url
             self.agent_name = agent_name
@@ -57,8 +62,8 @@ if USE_ARBI:
             #print(query)
             return handleReqest(query)
 
-        def execute(self, broker_type=2):
-            arbi_agent_excutor.excute(self.broker_url, self.agent_name, self, broker_type)
+        def execute(self, broker_type=BrokerType.ZERO_MQ):
+            arbi_agent_executor.execute(self.broker_url, self.agent_name, self, broker_type)
             print(self.agent_name + " ready")
 
     def msg2arbi(msg, header="MultiRobotPath", pathHeader = "RobotPath", singlePathHeader = "path"):
@@ -232,7 +237,7 @@ def main():
 
     #use arbi
     if USE_ARBI:    
-        arbiAgent = aAgent(agent_name=arbiMAPF)
+        arbiAgent = aAgent(agent_name=arbiMAPF, broker_url=brokerURL)
         arbiAgent.execute()
         arbiAgent.send("agent://www.arbi.com/receiveTest","Hi from MAPF");
     #use arbi end
