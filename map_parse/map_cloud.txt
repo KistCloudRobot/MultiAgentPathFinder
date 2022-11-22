@@ -1,616 +1,616 @@
 Vertex
+	name 143
+	type 0
+	pos 13.545 0.0 11.328
+	edge 144
+	edge 100
+Vertex
+	name 146
+	type 0
+	pos 13.501 0.0 8.445
+	edge 142
+	edge 147
+Vertex
+	name 144
+	type 0
+	pos 11.628 0.0 11.355
+	edge 145
+	edge 147
+	edge 143
+Vertex
+	name 147
+	type 0
+	pos 11.584 0.0 8.464
+	edge 144
+	edge 148
+	edge 146
+Vertex
+	name 145
+	type 0
+	pos 9.636 0.0 11.374
+	edge 4
+	edge 144
+Vertex
+	name 148
+	type 0
+	pos 9.563 0.0 8.408
+	edge 147
+	edge 3
+Vertex
 	name 100
 	type 0
-	pos 141.5 0.0 150.3
-	edge 101
+	pos 16.019 0.0 11.357
 	edge 143
+	edge 101
 Vertex
 	name 142
 	type 0
-	pos 141.5 0.0 147.3
-	edge 141
+	pos 16.07 0.0 8.57
 	edge 146
 	edge 101
+	edge 141
 Vertex
 	name 101
 	type 0
-	pos 141.5 0.0 148.7
+	pos 16.075 0.0 10.188
 	edge 100
-	edge 102
 	edge 142
+	edge 102
 Vertex
 	name 102
 	type 0
-	pos 146 0.0 148.7
-	edge 101
-	edge 103
+	pos 20.482 0.0 10.282
 	edge 10
+	edge 103
+	edge 101
 Vertex
 	name 103
 	type 0
-	pos 147.4 0.0 148.7
+	pos 21.912 0.0 10.333
 	edge 102
 	edge 104
 	edge 11
 Vertex
 	name 104
 	type 0
-	pos 148.9 0.0 148.7
+	pos 23.401 0.0 10.366
 	edge 103
-	edge 105
 	edge 12
+	edge 105
 Vertex
 	name 105
 	type 0
-	pos 150.3 0.0 148.7
+	pos 24.874 0.0 10.403
 	edge 106
-	edge 104
 	edge 13
+	edge 104
 Vertex
 	name 106
 	type 0
-	pos 151.8 0.0 148.7
+	pos 26.257 0.0 10.414
 	edge 107
-	edge 105
 	edge 14
+	edge 105
 Vertex
 	name 107
 	type 0
-	pos 153.2 0.0 148.7
-	edge 106
-	edge 15
+	pos 27.659 0.0 10.46
 	edge 109
+	edge 15
+	edge 106
+Vertex
+	name 109
+	type 0
+	pos 29.851 0.0 10.536
+	edge 111
+	edge 153
+	edge 107
+Vertex
+	name 153
+	type 0
+	pos 29.918 0.0 8.2
+	edge 109
+	edge 154
+Vertex
+	name 154
+	type 0
+	pos 29.95 0.0 6.857
+	edge 133
+	edge 153
+Vertex
+	name 133
+	type 0
+	pos 29.992 0.0 4.794
+	edge 154
+	edge 135
+	edge 131
 Vertex
 	name 111
 	type 0
-	pos 157.6 0.0 148.7
+	pos 31.993 0.0 10.57
 	edge 112
 	edge 16
 	edge 109
 Vertex
 	name 112
 	type 0
-	pos 159 0.0 148.7
+	pos 33.501 0.0 10.601
 	edge 113
-	edge 111
 	edge 17
+	edge 111
 Vertex
 	name 113
 	type 0
-	pos 160.5 0.0 148.7
+	pos 34.88 0.0 10.606
 	edge 114
-	edge 112
 	edge 18
+	edge 112
 Vertex
 	name 114
 	type 0
-	pos 161.9 0.0 148.7
+	pos 36.267 0.0 10.564
 	edge 115
-	edge 113
 	edge 19
+	edge 113
 Vertex
 	name 115
 	type 0
-	pos 163.4 0.0 148.7
+	pos 37.822 0.0 10.512
 	edge 116
-	edge 114
 	edge 20
+	edge 114
 Vertex
 	name 116
 	type 0
-	pos 164.8 0.0 148.7
-	edge 115
+	pos 39.248 0.0 10.404
 	edge 21
 	edge 117
+	edge 115
 Vertex
-	name 141
+	name 117
 	type 0
-	pos 141.5 0.0 143.25
-	edge 142
-	edge 140
-	edge 151
-	edge 149
+	pos 40.586 0.0 10.338
+	edge 118
+	edge 22
+	edge 116
 Vertex
-	name 140
+	name 118
 	type 0
-	pos 146 0.0 143.25
-	edge 141
-	edge 139
-	edge 24
-	edge 38
+	pos 42.122 0.0 10.333
+	edge 119
+	edge 23
+	edge 117
 Vertex
-	name 139
+	name 119
 	type 0
-	pos 147.4 0.0 143.25
-	edge 140
-	edge 138
-	edge 25
-	edge 39
+	pos 44.85 0.0 10.387
+	edge 156
+	edge 120
+	edge 118
 Vertex
-	name 138
+	name 156
 	type 0
-	pos 148.9 0.0 143.25
-	edge 139
-	edge 40
-	edge 137
-	edge 26
+	pos 45.9 0.0 10.4
+	edge 119
 Vertex
-	name 137
+	name 120
 	type 0
-	pos 150.3 0.0 143.25
-	edge 136
-	edge 41
-	edge 138
-	edge 27
+	pos 44.9 0.0 8.5
+	edge 121
+	edge 119
+	edge 157
 Vertex
-	name 136
+	name 121
 	type 0
-	pos 151.8 0.0 143.25
-	edge 137
-	edge 135
-	edge 28
-	edge 42
+	pos 44.9 0.0 7.1
+	edge 122
+	edge 120
+	edge 158
 Vertex
-	name 135
+	name 122
 	type 0
-	pos 153.2 0.0 143.25
-	edge 136
-	edge 29
-	edge 43
-	edge 133
-Vertex
-	name 131
-	type 0
-	pos 157.6 0.0 143.25
-	edge 130
-	edge 30
-	edge 46
-	edge 133
-Vertex
-	name 130
-	type 0
-	pos 159 0.0 143.25
-	edge 131
-	edge 31
-	edge 47
-	edge 129
-Vertex
-	name 128
-	type 0
-	pos 161.9 0.0 143.25
-	edge 129
-	edge 33
-	edge 49
-	edge 127
-Vertex
-	name 126
-	type 0
-	pos 164.8 0.0 143.25
-	edge 125
-	edge 127
-	edge 35
-	edge 51
-Vertex
-	name 125
-	type 0
-	pos 166.3 0.0 143.25
-	edge 126
+	pos 44.9 0.0 4.8
 	edge 124
-	edge 36
-	edge 52
+	edge 121
+	edge 159
+Vertex
+	name 159
+	type 0
+	pos 45.9 0.0 4.8
+	edge 122
 Vertex
 	name 124
 	type 0
-	pos 167.7 0.0 143.25
+	pos 42.413 0.0 4.725
 	edge 125
 	edge 37
 	edge 53
 	edge 122
 Vertex
-	name 10
-	type 1
-	pos 146 0.0 146.9
-	edge 102
-Vertex
-	name 11
-	type 1
-	pos 147.4 0.0 146.9
-	edge 103
-Vertex
-	name 14
-	type 1
-	pos 151.8 0.0 146.9
-	edge 106
-Vertex
-	name 15
-	type 1
-	pos 153.2 0.0 146.9
-	edge 107
-Vertex
-	name 16
-	type 1
-	pos 157.6 0.0 146.9
-	edge 111
-Vertex
-	name 17
-	type 1
-	pos 159 0.0 146.9
-	edge 112
-Vertex
-	name 18
-	type 1
-	pos 160.5 0.0 146.9
-	edge 113
-Vertex
-	name 19
-	type 1
-	pos 161.9 0.0 146.9
-	edge 114
-Vertex
-	name 20
-	type 1
-	pos 163.4 0.0 146.9
-	edge 115
-Vertex
-	name 21
-	type 1
-	pos 164.8 0.0 146.9
-	edge 116
-Vertex
-	name 24
-	type 1
-	pos 146 0.0 145.5
-	edge 140
-Vertex
-	name 25
-	type 1
-	pos 147.4 0.0 145.5
-	edge 139
-Vertex
-	name 28
-	type 1
-	pos 151.8 0.0 145.5
-	edge 136
-Vertex
-	name 29
-	type 1
-	pos 153.2 0.0 145.5
-	edge 135
-Vertex
-	name 30
-	type 1
-	pos 157.6 0.0 145.5
-	edge 131
-Vertex
-	name 31
-	type 1
-	pos 159 0.0 145.5
-	edge 130
-Vertex
-	name 38
-	type 1
-	pos 146 0.0 141
-	edge 140
-Vertex
-	name 39
-	type 1
-	pos 147.4 0.0 141
-	edge 139
-Vertex
-	name 40
-	type 1
-	pos 148.9 0.0 141
-	edge 138
-Vertex
-	name 41
-	type 1
-	pos 150.3 0.0 141
-	edge 137
-Vertex
-	name 42
-	type 1
-	pos 151.8 0.0 141
-	edge 136
-Vertex
-	name 43
-	type 1
-	pos 153.2 0.0 141
-	edge 135
-Vertex
-	name 46
-	type 1
-	pos 157.6 0.0 141
-	edge 131
-Vertex
-	name 47
-	type 1
-	pos 159 0.0 141
-	edge 130
-Vertex
-	name 35
-	type 1
-	pos 164.8 0.0 145.5
-	edge 126
-Vertex
-	name 36
-	type 1
-	pos 166.3 0.0 145.5
-	edge 125
-Vertex
-	name 37
-	type 1
-	pos 167.7 0.0 145.5
-	edge 124
-Vertex
-	name 51
-	type 1
-	pos 164.8 0.0 141
-	edge 126
-Vertex
-	name 52
-	type 1
-	pos 166.3 0.0 141
-	edge 125
-Vertex
-	name 53
-	type 1
-	pos 167.7 0.0 141
-	edge 124
-Vertex
-	name 23
-	type 1
-	pos 167.7 0.0 146.9
-	edge 118
-Vertex
-	name 121
+	name 125
 	type 0
-	pos 170 0.0 145
-	edge 120
-	edge 158
-	edge 122
+	pos 40.901 0.0 4.808
+	edge 126
+	edge 36
+	edge 52
+	edge 124
+Vertex
+	name 126
+	type 0
+	pos 39.5 0.0 4.7
+	edge 127
+	edge 35
+	edge 125
+	edge 51
 Vertex
 	name 127
 	type 0
-	pos 163.4 0.0 143.25
-	edge 126
+	pos 38 0.0 4.7
 	edge 128
 	edge 34
+	edge 126
 	edge 50
 Vertex
-	name 109
+	name 128
 	type 0
-	pos 155.4 0.0 148.7
-	edge 153
-	edge 107
-	edge 111
-Vertex
-	name 133
-	type 0
-	pos 155.4 0.0 143.25
-	edge 154
-	edge 135
-	edge 131
+	pos 36.5 0.0 4.7
+	edge 129
+	edge 33
+	edge 49
+	edge 127
 Vertex
 	name 129
 	type 0
-	pos 160.5 0.0 143.25
+	pos 35.041 0.0 4.805
 	edge 130
-	edge 128
 	edge 32
+	edge 128
 	edge 48
 Vertex
-	name 153
+	name 130
 	type 0
-	pos 155.4 0.0 146.8
-	edge 109
-	edge 154
+	pos 33.547 0.0 4.795
+	edge 131
+	edge 31
+	edge 47
+	edge 129
 Vertex
-	name 154
+	name 131
 	type 0
-	pos 155.4 0.0 145.1
-	edge 153
+	pos 32.114 0.0 4.782
+	edge 30
+	edge 130
+	edge 46
 	edge 133
 Vertex
-	name 32
-	type 1
-	pos 160.5 0.0 145.5
-	edge 129
-Vertex
-	name 33
-	type 1
-	pos 161.9 0.0 145.5
-	edge 128
-Vertex
-	name 48
-	type 1
-	pos 160.5 0.0 141
-	edge 129
-Vertex
-	name 49
-	type 1
-	pos 161.9 0.0 141
-	edge 128
-Vertex
-	name 34
-	type 1
-	pos 163.4 0.0 145.5
-	edge 127
-Vertex
-	name 50
-	type 1
-	pos 163.4 0.0 141
-	edge 127
-Vertex
-	name 22
-	type 1
-	pos 166.3 0.0 146.9
-	edge 117
-Vertex
-	name 500
-	type 2
-	pos 173.4 0.0 146.8
-	edge 157
-Vertex
-	name 501
-	type 2
-	pos 173.4 0.0 145
-	edge 158
-Vertex
-	name 117
+	name 135
 	type 0
-	pos 166.3 0.0 148.7
-	edge 22
-	edge 118
-	edge 116
+	pos 27.957 0.0 4.646
+	edge 136
+	edge 29
+	edge 43
+	edge 133
 Vertex
-	name 118
+	name 136
 	type 0
-	pos 167.7 0.0 148.7
-	edge 117
-	edge 23
-	edge 119
+	pos 26.312 0.0 4.628
+	edge 28
+	edge 137
+	edge 42
+	edge 135
 Vertex
-	name 119
+	name 137
 	type 0
-	pos 170 0.0 148.7
-	edge 118
-	edge 120
-	edge 156
+	pos 24.897 0.0 4.637
+	edge 138
+	edge 41
+	edge 27
+	edge 136
 Vertex
-	name 120
+	name 138
 	type 0
-	pos 170 0.0 146.8
-	edge 121
-	edge 119
-	edge 157
+	pos 23.41 0.0 4.642
+	edge 26
+	edge 137
+	edge 40
+	edge 139
 Vertex
-	name 157
+	name 139
 	type 0
-	pos 171.9 0.0 146.8
-	edge 500
-	edge 120
+	pos 22.044 0.0 4.656
+	edge 140
+	edge 39
+	edge 25
+	edge 138
 Vertex
-	name 146
+	name 140
 	type 0
-	pos 138.95 0.0 147.3
+	pos 20.459 0.0 4.686
+	edge 141
+	edge 139
+	edge 24
+	edge 38
+Vertex
+	name 141
+	type 0
+	pos 16.251 0.0 4.52
+	edge 149
 	edge 142
-	edge 147
-Vertex
-	name 147
-	type 0
-	pos 136.5 0.0 147.3
-	edge 146
-	edge 148
-	edge 144
-Vertex
-	name 144
-	type 0
-	pos 136.5 0.0 150.3
-	edge 143
-	edge 145
-	edge 147
-Vertex
-	name 145
-	type 0
-	pos 133.8 0.0 150.3
-	edge 144
-	edge 4
-Vertex
-	name 143
-	type 0
-	pos 138.95 0.0 150.3
-	edge 100
-	edge 144
-Vertex
-	name 148
-	type 0
-	pos 133.8 0.0 147.3
-	edge 147
-	edge 3
-Vertex
-	name 3
-	type 1
-	pos 131.7 0.0 147.3
-	edge 148
-Vertex
-	name 4
-	type 1
-	pos 131.7 0.0 150.3
-	edge 145
-Vertex
-	name 158
-	type 0
-	pos 171.9 0.0 145
-	edge 501
-	edge 121
-Vertex
-	name 2
-	type 1
-	pos 132.9 0.0 143.2
-	edge 150
-Vertex
-	name 1
-	type 1
-	pos 132.9 0.0 141.9
-	edge 152
-Vertex
-	name 152
-	type 0
-	pos 135.4 0.0 141.9
-	edge 1
 	edge 151
+	edge 140
+Vertex
+	name 149
+	type 0
+	pos 13.543 0.0 4.673
+	edge 141
+	edge 150
 Vertex
 	name 150
 	type 0
-	pos 135.4 0.0 143.2
+	pos 10.725 0.0 4.604
 	edge 149
 	edge 2
 Vertex
 	name 151
 	type 0
-	pos 138.9 0.0 141.9
+	pos 13.401 0.0 3.166
 	edge 141
 	edge 152
 Vertex
-	name 149
+	name 152
 	type 0
-	pos 138.9 0.0 143.2
-	edge 141
-	edge 150
+	pos 10.808 0.0 3.056
+	edge 151
+	edge 1
 Vertex
-	name 156
-	type 0
-	pos 171.9 0.0 148.7
-	edge 119
+	name 10
+	type 1
+	pos 20.676 0.0 8.179
+	edge 102
 Vertex
-	name 159
-	type 0
-	pos 171.9 0.0 143.25
-	edge 122
-Vertex
-	name 122
-	type 0
-	pos 170 0.0 143.25
-	edge 121
-	edge 159
-	edge 124
+	name 11
+	type 1
+	pos 22.059 0.0 8.105
+	edge 103
 Vertex
 	name 12
 	type 1
-	pos 148.9 0.0 146.9
+	pos 23.345 0.0 8.124
 	edge 104
 Vertex
 	name 13
 	type 1
-	pos 150.3 0.0 146.9
+	pos 25 0.0 8.2
 	edge 105
 Vertex
-	name 26
+	name 14
 	type 1
-	pos 148.9 0.0 145.5
-	edge 138
+	pos 26.4 0.0 8.2
+	edge 106
+Vertex
+	name 15
+	type 1
+	pos 27.8 0.0 8.2
+	edge 107
+Vertex
+	name 16
+	type 1
+	pos 32.1 0.0 8.2
+	edge 111
+Vertex
+	name 17
+	type 1
+	pos 33.4 0.0 8.1
+	edge 112
+Vertex
+	name 18
+	type 1
+	pos 34.9 0.0 8.1
+	edge 113
+Vertex
+	name 19
+	type 1
+	pos 36.2 0.0 8.1
+	edge 114
+Vertex
+	name 20
+	type 1
+	pos 37.8 0.0 8.3
+	edge 115
+Vertex
+	name 21
+	type 1
+	pos 39.2 0.0 8.3
+	edge 116
+Vertex
+	name 22
+	type 1
+	pos 40.5 0.0 8.2
+	edge 117
+Vertex
+	name 23
+	type 1
+	pos 42.1 0.0 8.3
+	edge 118
+Vertex
+	name 37
+	type 1
+	pos 42.4 0.0 6.9
+	edge 124
+Vertex
+	name 36
+	type 1
+	pos 40.9 0.0 6.8
+	edge 125
+Vertex
+	name 35
+	type 1
+	pos 39.5 0.0 6.8
+	edge 126
+Vertex
+	name 34
+	type 1
+	pos 38 0.0 6.8
+	edge 127
+Vertex
+	name 33
+	type 1
+	pos 36.5 0.0 6.9
+	edge 128
+Vertex
+	name 32
+	type 1
+	pos 35 0.0 6.8
+	edge 129
+Vertex
+	name 31
+	type 1
+	pos 33.5 0.0 6.7
+	edge 130
+Vertex
+	name 30
+	type 1
+	pos 32 0.0 6.8
+	edge 131
+Vertex
+	name 29
+	type 1
+	pos 27.9 0.0 6.7
+	edge 135
+Vertex
+	name 28
+	type 1
+	pos 26.3 0.0 6.7
+	edge 136
 Vertex
 	name 27
 	type 1
-	pos 150.3 0.0 145.5
+	pos 24.9 0.0 6.7
 	edge 137
+Vertex
+	name 26
+	type 1
+	pos 23.4 0.0 6.7
+	edge 138
+Vertex
+	name 25
+	type 1
+	pos 22.1 0.0 6.7
+	edge 139
+Vertex
+	name 24
+	type 1
+	pos 20.5 0.0 6.6
+	edge 140
+Vertex
+	name 38
+	type 1
+	pos 20.6 0.0 2.3
+	edge 140
+Vertex
+	name 39
+	type 1
+	pos 22.1 0.0 2.3
+	edge 139
+Vertex
+	name 40
+	type 1
+	pos 23.4 0.0 2.3
+	edge 138
+Vertex
+	name 41
+	type 1
+	pos 24.9 0.0 2.4
+	edge 137
+Vertex
+	name 42
+	type 1
+	pos 26.4 0.0 2.4
+	edge 136
+Vertex
+	name 43
+	type 1
+	pos 28 0.0 2.4
+	edge 135
+Vertex
+	name 46
+	type 1
+	pos 32.2 0.0 2.4
+	edge 131
+Vertex
+	name 47
+	type 1
+	pos 33.6 0.0 2.4
+	edge 130
+Vertex
+	name 48
+	type 1
+	pos 35.1 0.0 2.4
+	edge 129
+Vertex
+	name 49
+	type 1
+	pos 36.5 0.0 2.4
+	edge 128
+Vertex
+	name 50
+	type 1
+	pos 38 0.0 2.6
+	edge 127
+Vertex
+	name 51
+	type 1
+	pos 39.5 0.0 2.5
+	edge 126
+Vertex
+	name 52
+	type 1
+	pos 40.9 0.0 2.5
+	edge 125
+Vertex
+	name 53
+	type 1
+	pos 42.4 0.0 2.5
+	edge 124
+Vertex
+	name 4
+	type 1
+	pos 7.5 0.0 11.4
+	edge 145
+Vertex
+	name 3
+	type 1
+	pos 7.5 0.0 8.4
+	edge 148
+Vertex
+	name 157
+	type 0
+	pos 45.9 0.0 8.5
+	edge 500
+	edge 120
+Vertex
+	name 158
+	type 0
+	pos 45.9 0.0 7.1
+	edge 501
+	edge 121
+Vertex
+	name 501
+	type 2
+	pos 46.4 0.0 7.1
+	edge 158
+Vertex
+	name 500
+	type 2
+	pos 46.4 0.0 8.5
+	edge 157
+Vertex
+	name 1
+	type 1
+	pos 7.5 0.0 3
+	edge 152
+Vertex
+	name 2
+	type 1
+	pos 7.5 0.0 4.6
+	edge 150
