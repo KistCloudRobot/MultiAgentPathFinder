@@ -23,49 +23,46 @@ USE_ARBI = True
 
 sys.path.append("/home/kist/pythonProject/Python-mcArbiFramework")
 
+from arbi_agent.configuration import BrokerType
+from arbi_agent.agent.arbi_agent import ArbiAgent
+from arbi_agent.agent import arbi_agent_executor
+from arbi_agent.model import generalized_list_factory as GLFactory
+
 robot_path_delim = ':'
 robot_robot_delim = ';'
 path_path_delim = '-'
 
-arbiMAPF = "agent://www.arbi.com/MultiAgentPathFinder"
 
 args = {"param":"yaml/input.yaml","output":"yaml/output.yaml"}
 MAP_CLOUD_PATH = "map_parse/map_cloud.txt"
 
-# brokerURL = "tcp://127.0.0.1:61316"
-# brokerURL = "tcp://172.16.165.141:61316"
-brokerURL = "tcp://192.168.100.10:61316"
+agent_name = "agent://www.arbi.com/MultiAgentPathFinder"
+broker_host = "127.0.0.1"
+# broker_host = "172.16.165.141"
+# broker_host = "192.168.100.10"
+broker_port = 61316
+# broker_type = BrokerType.ACTIVE_MQ
+broker_type = BrokerType.ZERO_MQ
 
 #use arbi
 if USE_ARBI:
-    from arbi_agent.agent.arbi_agent import ArbiAgent
-    from arbi_agent.configuration import BrokerType
-    from arbi_agent.agent import arbi_agent_executor
-    from arbi_agent.model import generalized_list_factory as GLFactory
 
     class aAgent(ArbiAgent):
-        def __init__(self, agent_name, broker_url = "tcp://127.0.0.1:61316"):
+        def __init__(self):
             super().__init__()
-            self.broker_url = broker_url
-            self.agent_name = agent_name
-            #self.agent_url = agent_url
 
         def on_data(self, sender: str, data: str):
-            print(self.agent_url + "\t-> receive data : " + data)
-        
+            print("receive data : " + data)
+
         def on_request(self, sender: str, request: str) -> str:
-            print(self.agent_url + "\t-> receive request : " + request)
+            print("receive request : " + request)
             return handleReqest(request)
             #return "(request ok)"
 
         def on_query(self, sender: str, query: str) -> str:
-            print(self.agent_url + "\t-> receive query : " + query)
+            print("receive query : " + query)
             #print(query)
             return handleReqest(query)
-
-        def execute(self, broker_type=BrokerType.ZERO_MQ):
-            arbi_agent_executor.execute(self.broker_url, self.agent_name, self, broker_type)
-            print(self.agent_name + " ready")
 
     def msg2arbi(msg, header="MultiRobotPath", pathHeader = "RobotPath", singlePathHeader = "path"):
 
@@ -76,20 +73,20 @@ if USE_ARBI:
             # (MultiRobotPath (RobotPath $robot_id (path $v_id1 $v_id2 $v_id3, ...)), ???)
             out_msg = "(" + header + " "
             pathList = []
-            if(len(msg)>0):        
+            if(len(msg)>0):
                 msgList = msg.split(robot_robot_delim)
                 for r in msgList:
                     name_node = r.split(robot_path_delim)
                     nodes = name_node[1].split(path_path_delim)
                     resultPath = "(" + singlePathHeader + " " + " ".join(nodes) + ")"
                     pathList.append('(' + pathHeader + " " + "\"" + name_node[0] + "\" " + resultPath + ')')
-            
+
             out_msg += " ".join(pathList)
             out_msg += ')'
 
         return out_msg
 
-    def arbi2msg(arbi_msg):    
+    def arbi2msg(arbi_msg):
         # (MultiRobotPath (RobotPath $robot_id $cur_vertex $goal_id), ???)
         # name1,start1,goal1;name2,start2,goal2, ...
         gl = GLFactory.new_gl_from_gl_string(arbi_msg)
@@ -130,19 +127,19 @@ if USE_ARBI:
                             verdict = False
 
         return verdict
-                    
+
     def handleReqest(msg_gl):
         handle_start = time.time()
         print(msg_gl)
         #convert arbi Gl to custom format
         msg = arbi2msg(msg_gl)
         # name1,start1,goal1;name2,start2,goal2, ...
-        
+
         #check if all goals are unique
         if(unique_goal_check(msg) == False):
             #goals are not unique. return fail
             return msg2arbi("failed")
-        
+
         agentsList = []
         byRobots = msg.split(robot_robot_delim)
         for r in byRobots:
@@ -189,12 +186,12 @@ def msg2agentList(msg):
 
 def planning_loop(agents_in,print_result=True):
     #wait and get agents from server, do the job, then repeat
-    #assume agents info(agents_in) is received    
+    #assume agents info(agents_in) is received
     loop_start = time.time()
 
     #initialize env
     env = pt.Environment(mapElems.dimension, agents_in, mapElems.obstacles, mapElems.vertices_with_name, mapElems.edges_dict)
-    
+
     # Searching
     cbs = pt.CBS(env)
     start = time.time()
@@ -237,10 +234,9 @@ def main():
     #start an agent
 
     #use arbi
-    if USE_ARBI:    
-        arbiAgent = aAgent(agent_name=arbiMAPF, broker_url=brokerURL)
-        arbiAgent.execute()
-        arbiAgent.send("agent://www.arbi.com/receiveTest","Hi from MAPF");
+    if USE_ARBI:
+        agent = aAgent()
+        arbi_agent_executor.execute(broker_host, broker_port, agent_name, agent, broker_type)
     #use arbi end
 
     # Read from input file
