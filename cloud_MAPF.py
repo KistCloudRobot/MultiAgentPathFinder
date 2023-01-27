@@ -17,6 +17,8 @@ import deps.mapElements as mapElements
 
 import deps.planningTools as pt
 import deps.printInColor as pic
+from deps.cbs import CBS
+from deps.cbs3 import CBS3
 #import handler_tools as ht
 
 USE_ARBI = True
@@ -193,7 +195,8 @@ def planning_loop(agents_in,print_result=True):
     env = pt.Environment(mapElems.dimension, agents_in, mapElems.obstacles, mapElems.vertices_with_name, mapElems.edges_dict)
     
     # Searching
-    cbs = pt.CBS(env)
+    # cbs = CBS(env)
+    cbs = CBS3(env)
     start = time.time()
     solution = cbs.search(print_=print_result)
     end = time.time()
@@ -279,43 +282,29 @@ def main():
 
     #test run
     if not USE_ARBI:
+        # case1
+        a1 = ["AMR_LIFT1", "140", "118"]
+        a2 = ["AMR_LIFT2", "107", "104"]
+        a3 = ["AMR_LIFT3", "150", "116"]
+        a4 = ["AMR_LIFT4", "116", "115"]
 
-        # map version 9
-        # a1 = ["a1","102","23"]
-        # a2 = ["a2","103","14"]
-        # a3 = ["a3","101","15"]
-        # a4 = ["a4","104","10"]
-        # b1 = ["b1","1046","29"]
+        # # case2
+        # a1 = ["AMR_LIFT1", "138", "138"]
+        # a2 = ["AMR_LIFT2", "115", "148"]
+        # a3 = ["AMR_LIFT3", "142", "103"]
+        # a4 = ["AMR_LIFT4", "102", "102"]
 
-        # map version 10
-        # a1 = ["AMR_LIFT1","146","103"]
-        # a2 = ["AMR_LIFT2","114","145"]
-        # a3 = ["AMR_LIFT3","152","124"]
-        # a4 = ["AMR_LIFT4","135","135"]
+        # # case3
+        # a1 = ["AMR_LIFT1", "103", "129"]
+        # a2 = ["AMR_LIFT2", "126", "130"]
+        # a3 = ["AMR_LIFT3", "150", "127"]
+        # a4 = ["AMR_LIFT4", "135", "138"]
 
-        # # case1,2
+        # # case4
         # a1 = ["AMR_LIFT1", "146", "106"]
         # a2 = ["AMR_LIFT2", "107", "104"]
         # a3 = ["AMR_LIFT3", "149", "140"]
         # a4 = ["AMR_LIFT4", "115", "148"]
-        
-        # case3
-        a1 = ["AMR_LIFT1","145","118"]
-        a2 = ["AMR_LIFT2","116","115"]
-        a3 = ["AMR_LIFT3","150","150"]
-        a4 = ["AMR_LIFT4","125","104"]
-
-        # # case4
-        # a1 = ["AMR_LIFT1","145","105"]
-        # a2 = ["AMR_LIFT2","116","115"]
-        # a3 = ["AMR_LIFT3","150","150"]
-        # a4 = ["AMR_LIFT4","125","104"]
-
-        # # case5
-        # a1 = ["AMR_LIFT1","145","144"]
-        # a2 = ["AMR_LIFT2","156","148"]
-        # a3 = ["AMR_LIFT3","114","146"]
-        # a4 = ["AMR_LIFT4","122","150"]
 
         test_robots = []
         test_robots.append(a1)    

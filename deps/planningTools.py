@@ -4,7 +4,7 @@ sys.path.insert(0, './deps')
 import argparse
 import yaml
 from math import fabs
-from itertools import combinations
+from itertools import combinations, permutations
 from copy import deepcopy
 
 from a_star import AStar
@@ -73,6 +73,8 @@ class State(object):
         return self.location == state.location
     def __str__(self):
         return str((self.time, self.location.x, self.location.y))
+    def __repr__(self):
+        return str((self.time, self.location.x, self.location.y))
 
 class Conflict(object):
     VERTEX = 1
@@ -128,7 +130,8 @@ class Constraints(object):
     def __str__(self):
         return "VC: " + str([str(vc) for vc in self.vertex_constraints])  + \
             "EC: " + str([str(ec) for ec in self.edge_constraints])
-
+    def __len__(self):
+        return len(self.vertex_constraints) + len(self.edge_constraints)
 class Environment(object):
     def __init__(self, dimension, agents, obstacles, vertices_with_name, edges_dict):
         self.dimension = dimension
@@ -268,8 +271,9 @@ class Environment(object):
     def get_first_conflict(self, solution):
         max_t = max([len(plan) for plan in solution.values()])
         result = Conflict()
+        combinations_of_agents = list(combinations(solution.keys(), 2))
         for t in range(max_t):
-            for agent_1, agent_2 in combinations(solution.keys(), 2):
+            for agent_1, agent_2 in combinations_of_agents:
                 state_1 = self.get_state(agent_1, solution, t)
                 state_2 = self.get_state(agent_2, solution, t)
                 if state_1.is_equal_except_time(state_2):
@@ -280,7 +284,7 @@ class Environment(object):
                     result.agent_2 = agent_2
                     return result
 
-            for agent_1, agent_2 in combinations(solution.keys(), 2):
+            for agent_1, agent_2 in combinations_of_agents:
                 state_1a = self.get_state(agent_1, solution, t)
                 state_1b = self.get_state(agent_1, solution, t+1)
 
@@ -318,6 +322,156 @@ class Environment(object):
 
             constraint_dict[conflict.agent_1] = constraint1
             constraint_dict[conflict.agent_2] = constraint2
+
+        return constraint_dict
+    
+    # Hyojeong Edit
+    def get_goal_overlap_agents(self, solution):        
+        agent_path_goal = dict()
+        for agent, path in solution.items():
+            agent_path_goal[agent] = {'path':path, 'goal':path[-1]}
+        
+        goal_overlap_agents = []
+        for agent_1, agent_2 in permutations(agent_path_goal.keys(), 2):
+            # if (a2, a1) already in set, no need to add (a1, a2)
+            if (agent_2, agent_1) in goal_overlap_agents:
+                continue
+            for state in agent_path_goal[agent_1]['path']:
+                if state.is_equal_except_time(agent_path_goal[agent_2]['goal']):
+                    goal_overlap_agents.append((agent_1, agent_2))
+                    break
+
+        return goal_overlap_agents
+
+    def get_conflict_cbs3(self, solution, current_overlap, goal_overlap_agents):
+        max_t = max([len(plan) for plan in solution.values()])
+        result = Conflict()
+        is_overlap = False
+        combinations_of_agents = list(combinations(solution.keys(), 2))
+        
+        # if current overlap exist, check conflict btw those agent first
+        if current_overlap:
+            agent_1, agent_2 = current_overlap
+            for t in range(max_t):
+                # vertex conflict
+                state_1 = self.get_state(agent_1, solution, t)
+                state_2 = self.get_state(agent_2, solution, t)
+                if state_1.is_equal_except_time(state_2):
+                    result.time = t
+                    result.type = Conflict.VERTEX
+                    result.location_1 = state_1.location
+                    result.agent_1 = agent_1
+                    result.agent_2 = agent_2
+                    return result, True
+                
+                # edge conflict
+                state_1a = self.get_state(agent_1, solution, t)
+                state_1b = self.get_state(agent_1, solution, t+1)
+                state_2a = self.get_state(agent_2, solution, t)
+                state_2b = self.get_state(agent_2, solution, t+1)
+                if state_1a.is_equal_except_time(state_2b) and state_1b.is_equal_except_time(state_2a):
+                    result.time = t
+                    result.type = Conflict.EDGE
+                    result.agent_1 = agent_1
+                    result.agent_2 = agent_2
+                    result.location_1 = state_1a.location
+                    result.location_2 = state_1b.location
+                    return result, True
+        
+        # if goal overlap agents exist, check conflict btw those agent first
+        if goal_overlap_agents:
+            for t in range(max_t):
+                # vertex conflict
+                for agent_1, agent_2 in goal_overlap_agents:
+                    state_1 = self.get_state(agent_1, solution, t)
+                    state_2 = self.get_state(agent_2, solution, t)
+                    if state_1.is_equal_except_time(state_2):
+                        result.time = t
+                        result.type = Conflict.VERTEX
+                        result.location_1 = state_1.location
+                        result.agent_1 = agent_1
+                        result.agent_2 = agent_2
+                        return result, True
+                # edge conflict
+                for agent_1, agent_2 in goal_overlap_agents:
+                    state_1a = self.get_state(agent_1, solution, t)
+                    state_1b = self.get_state(agent_1, solution, t+1)
+
+                    state_2a = self.get_state(agent_2, solution, t)
+                    state_2b = self.get_state(agent_2, solution, t+1)
+
+                    if state_1a.is_equal_except_time(state_2b) and state_1b.is_equal_except_time(state_2a):
+                        result.time = t
+                        result.type = Conflict.EDGE
+                        result.agent_1 = agent_1
+                        result.agent_2 = agent_2
+                        result.location_1 = state_1a.location
+                        result.location_2 = state_1b.location
+                        return result, True
+        
+        # if current_overlap and goal_overlap_agents is None or 
+        # conflict doesn't exist from above conditions, choose first conflict
+        for t in range(max_t):
+            # vertex conflict
+            for agent_1, agent_2 in combinations_of_agents:
+                state_1 = self.get_state(agent_1, solution, t)
+                state_2 = self.get_state(agent_2, solution, t)
+                if state_1.is_equal_except_time(state_2):
+                    result.time = t
+                    result.type = Conflict.VERTEX
+                    result.location_1 = state_1.location
+                    result.agent_1 = agent_1
+                    result.agent_2 = agent_2
+                    return result, False
+            # edge conflict
+            for agent_1, agent_2 in combinations_of_agents:
+                state_1a = self.get_state(agent_1, solution, t)
+                state_1b = self.get_state(agent_1, solution, t+1)
+
+                state_2a = self.get_state(agent_2, solution, t)
+                state_2b = self.get_state(agent_2, solution, t+1)
+
+                if state_1a.is_equal_except_time(state_2b) and state_1b.is_equal_except_time(state_2a):
+                    result.time = t
+                    result.type = Conflict.EDGE
+                    result.agent_1 = agent_1
+                    result.agent_2 = agent_2
+                    result.location_1 = state_1a.location
+                    result.location_2 = state_1b.location
+                    return result, False
+
+        return False, False
+
+    def create_constraints_from_conflict_cbs3(self, conflict, is_overlap):
+        constraint_dict = {}
+        if conflict.type == Conflict.VERTEX:
+            v_constraint = VertexConstraint(conflict.time, conflict.location_1)
+            constraint = Constraints()
+            constraint.vertex_constraints |= {v_constraint}
+            
+            if is_overlap:
+                constraint_dict[(conflict.agent_1, conflict.agent_2)] = constraint
+                constraint_dict[(conflict.agent_2, conflict.agent_1)] = constraint
+            else:
+                constraint_dict[(conflict.agent_1, -1)] = constraint
+                constraint_dict[(conflict.agent_2, -1)] = constraint
+
+        elif conflict.type == Conflict.EDGE:
+            constraint1 = Constraints()
+            constraint2 = Constraints()
+
+            e_constraint1 = EdgeConstraint(conflict.time, conflict.location_1, conflict.location_2)
+            e_constraint2 = EdgeConstraint(conflict.time, conflict.location_2, conflict.location_1)
+
+            constraint1.edge_constraints |= {e_constraint1}
+            constraint2.edge_constraints |= {e_constraint2}
+
+            if is_overlap:
+                constraint_dict[(conflict.agent_1, conflict.agent_2)] = constraint1
+                constraint_dict[(conflict.agent_2, conflict.agent_1)] = constraint2
+            else:
+                constraint_dict[(conflict.agent_1, -1)] = constraint1
+                constraint_dict[(conflict.agent_2, -1)] = constraint2
 
         return constraint_dict
 
@@ -429,76 +583,15 @@ class HighLevelNode(object):
     def __lt__(self, other):
         return self.cost < other.cost
 
-class CBS(object):
-    def __init__(self, environment):
-        self.env = environment
-        self.open_set = set()
-        self.closed_set = set()
-    
-    def sum_of_cost(self, e):
-        return e.cost
-
-    def sum_of_move(self, e):
-        move = 0
-        for agent, path in e.solution.items():
-            for i in range(1, len(path)):
-                if path[i].location != path[i-1].location:
-                    move += 1
-        return move
-
-    def search(self,print_ = True):
-        start = HighLevelNode()
-        # TODO: Initialize it in a better way
-        start.constraint_dict = {}
-        for agent in self.env.agent_dict.keys():
-            start.constraint_dict[agent] = Constraints()
-
-        #mvc = VertexConstraint(-1,Location(2,2))
-        #start.constraint_dict["agent1"].vertex_constraints.add(mvc)
-
-        start.solution = self.env.compute_solution()
-        if not start.solution:
-            return {}
-        start.cost = self.env.compute_solution_cost(start.solution)
-
-        self.open_set |= {start}
-
-        while self.open_set:
-            P = min(self.open_set)
-            # Hyojeong Edit
-            # P = min(self.open_set, key=lambda x: (self.sum_of_cost(x), self.sum_of_move(x)))
-            self.open_set -= {P}
-            self.closed_set |= {P}
-
-            self.env.constraint_dict = P.constraint_dict
-            conflict_dict = self.env.get_first_conflict(P.solution)
-            if not conflict_dict:
-                if(print_==True):
-                    pic.printC("solution found",'green')
-
-                return self.generate_plan(P.solution)
-
-            constraint_dict = self.env.create_constraints_from_conflict(conflict_dict)
-
-            for agent in constraint_dict.keys():
-                new_node = deepcopy(P)
-                new_node.constraint_dict[agent].add_constraint(constraint_dict[agent])
-
-                self.env.constraint_dict = new_node.constraint_dict
-                new_node.solution = self.env.compute_solution()
-                if not new_node.solution:
-                    continue
-                new_node.cost = self.env.compute_solution_cost(new_node.solution)
-
-                # TODO: ending condition
-                if new_node not in self.closed_set:
-                    self.open_set |= {new_node}
-
-        return {}
-
-    def generate_plan(self, solution):
-        plan = {}
-        for agent, path in solution.items():
-            path_dict_list = [{'t':state.time, 'x':state.location.x, 'y':state.location.y} for state in path]
-            plan[agent] = path_dict_list
-        return plan
+    def print(self, indent, name=None):
+        msg = indent+"((((((({})))))))\n".format(name)
+        msg += indent+"[cost] {}\n".format(self.cost)
+        msg += indent+"[constraint dict]\n"
+        for agent, constraint in self.constraint_dict.items():
+            msg += (indent + str(agent) + "=" + str(constraint) + "\n")
+        msg += indent+"[solution]\n"
+        for agent, path in self.solution.items():
+            # msg += "{}={}\n".format(agent, path)
+            msg += (indent + str(agent) + "=" + str(path) + "\n")
+        msg += (indent + "---------------------------------------")
+        print(msg)
