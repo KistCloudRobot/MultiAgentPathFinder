@@ -34,20 +34,16 @@ robot_path_delim = ':'
 robot_robot_delim = ';'
 path_path_delim = '-'
 
-arbiMAPF = "agent://www.arbi.com/MultiAgentPathFinder"
-# brokerURL = "tcp://127.0.0.1:61316"
-brokerURL = "tcp://172.16.165.141:61316"
-
 args = {"param":"yaml/input.yaml","output":"yaml/output.yaml"}
 MAP_CLOUD_PATH = "map_parse/map_cloud.txt"
 
 agent_name = "agent://www.arbi.com/MultiAgentPathFinder"
-broker_host = "127.0.0.1"
-# broker_host = "172.16.165.141"
+# broker_host = "127.0.0.1"
+broker_host = "172.16.165.143"
 # broker_host = "192.168.100.10"
 broker_port = 61316
-# broker_type = BrokerType.ACTIVE_MQ
-broker_type = BrokerType.ZERO_MQ
+broker_type = BrokerType.ACTIVE_MQ
+# broker_type = BrokerType.ZERO_MQ
 
 #use arbi
 if USE_ARBI:
@@ -55,7 +51,7 @@ if USE_ARBI:
     class aAgent(ArbiAgent):
         def __init__(self):
             super().__init__()
-            self.broker_url = broker_url
+            self.broker_url = broker_host
             self.agent_name = agent_name
             #self.agent_url = agent_url
 
@@ -94,7 +90,7 @@ if USE_ARBI:
 
         return out_msg
 
-    def arbi2msg(arbi_msg):    
+    def arbi2msg(arbi_msg):
         # (MultiRobotPath (RobotPath $robot_id $cur_vertex $goal_id), ???)
         # name1,start1,goal1;name2,start2,goal2, ...
         gl = GLFactory.new_gl_from_gl_string(arbi_msg)
@@ -138,18 +134,17 @@ if USE_ARBI:
                     
     def handleReqest(msg_gl):
         handle_start = time.time()
-        print(msg_gl)
         #convert arbi Gl to custom format
         msg = arbi2msg(msg_gl)
         # name1,start1,goal1;name2,start2,goal2, ...
-        
         #check if all goals are unique
         if(unique_goal_check(msg) == False):
             #goals are not unique. return fail
             return msg2arbi("failed")
-        
+
         agentsList = []
         byRobots = msg.split(robot_robot_delim)
+
         for r in byRobots:
             elems = r.split(robot_path_delim)
             #convert node name to map index coord.
