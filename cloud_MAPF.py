@@ -17,6 +17,8 @@ import deps.mapElements as mapElements
 
 import deps.planningTools as pt
 import deps.printInColor as pic
+from deps.cbs import CBS
+from deps.cbs3 import CBS3
 #import handler_tools as ht
 
 USE_ARBI = True
@@ -32,6 +34,9 @@ robot_path_delim = ':'
 robot_robot_delim = ';'
 path_path_delim = '-'
 
+arbiMAPF = "agent://www.arbi.com/MultiAgentPathFinder"
+# brokerURL = "tcp://127.0.0.1:61316"
+brokerURL = "tcp://172.16.165.141:61316"
 
 args = {"param":"yaml/input.yaml","output":"yaml/output.yaml"}
 MAP_CLOUD_PATH = "map_parse/map_cloud.txt"
@@ -50,6 +55,9 @@ if USE_ARBI:
     class aAgent(ArbiAgent):
         def __init__(self):
             super().__init__()
+            self.broker_url = broker_url
+            self.agent_name = agent_name
+            #self.agent_url = agent_url
 
         def on_data(self, sender: str, data: str):
             print("receive data : " + data)
@@ -73,20 +81,20 @@ if USE_ARBI:
             # (MultiRobotPath (RobotPath $robot_id (path $v_id1 $v_id2 $v_id3, ...)), ???)
             out_msg = "(" + header + " "
             pathList = []
-            if(len(msg)>0):
+            if(len(msg)>0):        
                 msgList = msg.split(robot_robot_delim)
                 for r in msgList:
                     name_node = r.split(robot_path_delim)
                     nodes = name_node[1].split(path_path_delim)
                     resultPath = "(" + singlePathHeader + " " + " ".join(nodes) + ")"
                     pathList.append('(' + pathHeader + " " + "\"" + name_node[0] + "\" " + resultPath + ')')
-
+            
             out_msg += " ".join(pathList)
             out_msg += ')'
 
         return out_msg
 
-    def arbi2msg(arbi_msg):
+    def arbi2msg(arbi_msg):    
         # (MultiRobotPath (RobotPath $robot_id $cur_vertex $goal_id), ???)
         # name1,start1,goal1;name2,start2,goal2, ...
         gl = GLFactory.new_gl_from_gl_string(arbi_msg)
@@ -127,19 +135,19 @@ if USE_ARBI:
                             verdict = False
 
         return verdict
-
+                    
     def handleReqest(msg_gl):
         handle_start = time.time()
         print(msg_gl)
         #convert arbi Gl to custom format
         msg = arbi2msg(msg_gl)
         # name1,start1,goal1;name2,start2,goal2, ...
-
+        
         #check if all goals are unique
         if(unique_goal_check(msg) == False):
             #goals are not unique. return fail
             return msg2arbi("failed")
-
+        
         agentsList = []
         byRobots = msg.split(robot_robot_delim)
         for r in byRobots:
@@ -186,12 +194,12 @@ def msg2agentList(msg):
 
 def planning_loop(agents_in,print_result=True):
     #wait and get agents from server, do the job, then repeat
-    #assume agents info(agents_in) is received
+    #assume agents info(agents_in) is received    
     loop_start = time.time()
 
     #initialize env
     env = pt.Environment(mapElems.dimension, agents_in, mapElems.obstacles, mapElems.vertices_with_name, mapElems.edges_dict)
-
+    
     # Searching
     cbs = pt.CBS(env)
     start = time.time()
@@ -278,43 +286,29 @@ def main():
 
     #test run
     if not USE_ARBI:
+        # case1
+        a1 = ["AMR_LIFT1", "140", "118"]
+        a2 = ["AMR_LIFT2", "107", "104"]
+        a3 = ["AMR_LIFT3", "150", "116"]
+        a4 = ["AMR_LIFT4", "116", "115"]
 
-        # map version 9
-        # a1 = ["a1","102","23"]
-        # a2 = ["a2","103","14"]
-        # a3 = ["a3","101","15"]
-        # a4 = ["a4","104","10"]
-        # b1 = ["b1","1046","29"]
+        # # case2
+        # a1 = ["AMR_LIFT1", "138", "138"]
+        # a2 = ["AMR_LIFT2", "115", "148"]
+        # a3 = ["AMR_LIFT3", "142", "103"]
+        # a4 = ["AMR_LIFT4", "102", "102"]
 
-        # map version 10
-        # a1 = ["AMR_LIFT1","146","103"]
-        # a2 = ["AMR_LIFT2","114","145"]
-        # a3 = ["AMR_LIFT3","152","124"]
-        # a4 = ["AMR_LIFT4","135","135"]
+        # # case3
+        # a1 = ["AMR_LIFT1", "103", "129"]
+        # a2 = ["AMR_LIFT2", "126", "130"]
+        # a3 = ["AMR_LIFT3", "150", "127"]
+        # a4 = ["AMR_LIFT4", "135", "138"]
 
-        # # case1,2
+        # # case4
         # a1 = ["AMR_LIFT1", "146", "106"]
         # a2 = ["AMR_LIFT2", "107", "104"]
         # a3 = ["AMR_LIFT3", "149", "140"]
         # a4 = ["AMR_LIFT4", "115", "148"]
-        
-        # case3
-        a1 = ["AMR_LIFT1","145","118"]
-        a2 = ["AMR_LIFT2","116","115"]
-        a3 = ["AMR_LIFT3","150","150"]
-        a4 = ["AMR_LIFT4","125","104"]
-
-        # # case4
-        # a1 = ["AMR_LIFT1","145","105"]
-        # a2 = ["AMR_LIFT2","116","115"]
-        # a3 = ["AMR_LIFT3","150","150"]
-        # a4 = ["AMR_LIFT4","125","104"]
-
-        # # case5
-        # a1 = ["AMR_LIFT1","145","144"]
-        # a2 = ["AMR_LIFT2","156","148"]
-        # a3 = ["AMR_LIFT3","114","146"]
-        # a4 = ["AMR_LIFT4","122","150"]
 
         test_robots = []
         test_robots.append(a1)    
