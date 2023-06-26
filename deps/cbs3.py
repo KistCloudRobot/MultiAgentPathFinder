@@ -75,8 +75,8 @@ class CBS3(object):
             
             ##################################
             # update goal overlapped agent pairs if current overlap doesn't exist
-            if (expand == 1) or (current_overlap is None):
-                goal_overlap_agents = self.env.get_goal_overlap_agents(P.solution)
+            # if (expand == 1) or (current_overlap is None):
+            #   goal_overlap_agents = self.env.get_goal_overlap_agents(P.solution)
             # print(goal_overlap_agents)
             ##################################
 
@@ -84,7 +84,8 @@ class CBS3(object):
             # conflict = self.env.get_first_conflict(P.solution)
             ##################################
             # choose conflict with new condition
-            conflict, is_overlap = self.env.get_conflict_cbs3(P.solution, current_overlap, goal_overlap_agents)
+            # goal_overlap_agents = self.env.get_goal_overlap_agents(P.solution)
+            conflict, is_overlap = self.env.get_conflict_cbs3(P.solution, P.parent_overlap)
             if is_overlap:
                 current_overlap = (conflict.agent_1, conflict.agent_2)
             else:
@@ -116,7 +117,9 @@ class CBS3(object):
                     if not new_node.solution:
                         continue
                     new_node.cost = self.env.compute_solution_cost(new_node.solution)
-                    new_node.name = expand               
+                    new_node.name = expand
+
+                    new_node.parent_overlap = current_overlap
 
                     # if print_:
                     #     new_node.print("\t")

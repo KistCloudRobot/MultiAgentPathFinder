@@ -8,9 +8,12 @@ from itertools import combinations, permutations
 from copy import deepcopy
 
 from a_star import AStar
+from a_star1 import AStar1
 import time
 import mapElements
 import printInColor as pic
+
+from collections import defaultdict
 
 def grid2graph(xy_tuple,g2g_map):
     for v in g2g_map:
@@ -133,7 +136,7 @@ class Constraints(object):
     def __len__(self):
         return len(self.vertex_constraints) + len(self.edge_constraints)
 class Environment(object):
-    def __init__(self, dimension, agents, obstacles, vertices_with_name, edges_dict):
+    def __init__(self, dimension, agents, obstacles, vertices_with_name, edges_dict, cat):
         self.dimension = dimension
         self.obstacles = obstacles
 
@@ -145,7 +148,12 @@ class Environment(object):
         self.constraints = Constraints()
         self.constraint_dict = {}
 
-        self.a_star = AStar(self)
+        # Hyojeong Edit
+        if cat:
+            self.a_star = AStar1(self)
+        else:
+            self.a_star = AStar(self)
+        self.cat = cat
 
         #Jeeho Edit
         self.node_list = []
@@ -343,15 +351,15 @@ class Environment(object):
 
         return goal_overlap_agents
 
-    def get_conflict_cbs3(self, solution, current_overlap, goal_overlap_agents):
+    def get_conflict_cbs3(self, solution, prev_overlap):
         max_t = max([len(plan) for plan in solution.values()])
         result = Conflict()
         is_overlap = False
         combinations_of_agents = list(combinations(solution.keys(), 2))
         
-        # if current overlap exist, check conflict btw those agent first
-        if current_overlap:
-            agent_1, agent_2 = current_overlap
+        # if prev overlap still exist, check conflict btw those agent first
+        if prev_overlap:
+            agent_1, agent_2 = prev_overlap
             for t in range(max_t):
                 # vertex conflict
                 state_1 = self.get_state(agent_1, solution, t)
@@ -377,8 +385,9 @@ class Environment(object):
                     result.location_1 = state_1a.location
                     result.location_2 = state_1b.location
                     return result, True
-        
+
         # if goal overlap agents exist, check conflict btw those agent first
+        goal_overlap_agents = self.get_goal_overlap_agents(solution)
         if goal_overlap_agents:
             for t in range(max_t):
                 # vertex conflict
@@ -391,6 +400,7 @@ class Environment(object):
                         result.location_1 = state_1.location
                         result.agent_1 = agent_1
                         result.agent_2 = agent_2
+                        # print("\toverlap changed 1:", prev_overlap, "->", (agent_1, agent_2))
                         return result, True
                 # edge conflict
                 for agent_1, agent_2 in goal_overlap_agents:
@@ -407,9 +417,10 @@ class Environment(object):
                         result.agent_2 = agent_2
                         result.location_1 = state_1a.location
                         result.location_2 = state_1b.location
+                        # print("\toverlap changed 1:", prev_overlap, "->", (agent_1, agent_2))
                         return result, True
-        
-        # if current_overlap and goal_overlap_agents is None or 
+
+        # if prev_overlap and goal_overlap_agents is None or 
         # conflict doesn't exist from above conditions, choose first conflict
         for t in range(max_t):
             # vertex conflict
@@ -422,6 +433,7 @@ class Environment(object):
                     result.location_1 = state_1.location
                     result.agent_1 = agent_1
                     result.agent_2 = agent_2
+                    # print("\toverlap changed 2:", prev_overlap, "->", (agent_1, agent_2))
                     return result, False
             # edge conflict
             for agent_1, agent_2 in combinations_of_agents:
@@ -438,6 +450,7 @@ class Environment(object):
                     result.agent_2 = agent_2
                     result.location_1 = state_1a.location
                     result.location_2 = state_1b.location
+                    # print("\toverlap changed 2:", prev_overlap, "->", (agent_1, agent_2))
                     return result, False
 
         return False, False
@@ -543,6 +556,9 @@ class Environment(object):
         #Jeeho Edit
         #modify goal station accessibility by agent
 
+        # Hyojeong Edit
+        conflict_avoidance_table = defaultdict(int)
+
         #close all goals
         self.close_all_temp_open()
 
@@ -554,13 +570,16 @@ class Environment(object):
                 if(g_loc_location == n.location_grid):
                     n.temp_open = True
                     break
-
             self.constraints = self.constraint_dict.setdefault(agent, Constraints())
-            local_solution = self.a_star.search(agent)
+            local_solution = self.a_star.search(agent, conflict_avoidance_table)
+
             if not local_solution:
                 return False
+            # Hyojeong Edit
+            if self.cat:
+                for state in local_solution:
+                    conflict_avoidance_table[state] += 1
             solution.update({agent:local_solution})
-
         self.close_all_temp_open()
         return solution
 
@@ -572,6 +591,7 @@ class HighLevelNode(object):
         self.solution = {}
         self.constraint_dict = {}
         self.cost = 0
+        self.parent_overlap = None
 
     def __eq__(self, other):
         if not isinstance(other, type(self)): return NotImplemented

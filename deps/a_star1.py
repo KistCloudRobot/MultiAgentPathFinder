@@ -8,7 +8,7 @@ modifed: Hyojeong Kim (@rlagywjd802)
 
 """
 
-class AStar():
+class AStar1():
     def __init__(self, env):
         self.agent_dict = env.agent_dict
         self.admissible_heuristic = env.admissible_heuristic
@@ -65,10 +65,14 @@ class AStar():
             n_count += 1
             # if(n_count > n_lim): #consider failed
             #     break
-            temp_dict = {open_item:f_score.setdefault(open_item, float("inf")) for open_item in open_set}
+            temp_dict = dict()
+            temp_cat_dict = dict()
+            for open_item in open_set:
+                temp_dict[open_item] = f_score.setdefault(open_item, float("inf"))
+                temp_cat_dict[open_item] = cat[open_item]
 
             # Hyojeong Edit 
-            current = min(temp_dict, key=lambda x: (temp_dict.get(x), g1_score.get(x)))
+            current = min(temp_dict, key=lambda x: (temp_dict.get(x), temp_cat_dict.get(x)))
             if (temp_dict[current]) > n_lim1:
                 print("{} exceed limit!!!".format(agent_name))
                 break
@@ -90,20 +94,15 @@ class AStar():
                 
                 # Hyojeong Edit - add g1_score
                 tentative_g_score = g_score.setdefault(current, float("inf")) + step_cost
-                tentative_g1_score = self.sum_of_move(came_from, current)
 
                 if neighbor not in open_set:
                     open_set |= {neighbor}
                 elif tentative_g_score > g_score.setdefault(neighbor, float("inf")):
                     continue
-                elif tentative_g_score == g_score.setdefault(neighbor, float("inf")):
-                    if tentative_g1_score >= g1_score.setdefault(neighbor, float("inf")):
-                        continue
 
                 came_from[neighbor] = current
 
                 g_score[neighbor] = tentative_g_score
-                g1_score[neighbor] = tentative_g1_score
                 f_score[neighbor] = g_score[neighbor] + self.admissible_heuristic(neighbor, agent_name)
                 ###########################
         
