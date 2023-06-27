@@ -192,7 +192,7 @@ def planning_loop(agents_in,print_result=True):
     loop_start = time.time()
 
     #initialize env
-    env = pt.Environment(mapElems.dimension, agents_in, mapElems.obstacles, mapElems.vertices_with_name, mapElems.edges_dict, cat=True)
+    env = pt.Environment(mapElems.dimension, agents_in, mapElems.obstacles, mapElems.vertices_with_name, mapElems.edges_dict, cat=False)
     
     # Searching
     # cbs = CBS(env)
