@@ -5,6 +5,7 @@ Modifed: Ahn, Jeeho
 """
 #from os import getresgid, path
 import sys
+import os
 import copy
 #sys.path.insert(0, '../')
 import argparse
@@ -13,6 +14,7 @@ import yaml
 #Dr. Oh Map Parse Tool
 from map_parse import MapMOS as mapParser
 import time
+import pathlib
 import deps.mapElements as mapElements
 
 import deps.planningTools as pt
@@ -23,31 +25,46 @@ from deps.cbs3 import CBS3
 
 USE_ARBI = True
 
+sys.path.append("/home/kist/pythonProject/Python-mcArbiFramework")
 robot_path_delim = ':'
 robot_robot_delim = ';'
 path_path_delim = '-'
 
 arbiMAPF = "agent://www.arbi.com/MultiAgentPathFinder"
-# brokerURL = "tcp://127.0.0.1:61316"
-brokerURL = "tcp://172.16.165.141:61316"
 
-args = {"param":"yaml/input.yaml","output":"yaml/output.yaml"}
-MAP_CLOUD_PATH = "map_parse/map_cloud.txt"
+args = {
+    "param": pathlib.Path(__file__).parent.resolve() / "yaml/input.yaml",
+    "output": pathlib.Path(__file__).parent.resolve() / "yaml/output.yaml"
+}
+MAP_CLOUD_PATH = pathlib.Path(__file__).parent.resolve() / "map_parse/map_cloud.txt"
 
 #use arbi
 if USE_ARBI:
-    sys.path.append("/home/uosai/pythonProject/Python-mcArbiFramework")
     from arbi_agent.agent.arbi_agent import ArbiAgent
     from arbi_agent.configuration import BrokerType
     from arbi_agent.agent import arbi_agent_executor
     from arbi_agent.model import generalized_list_factory as GLFactory
 
+    broker_host = os.getenv("BROKER_ADDRESS")
+    if broker_host is None:
+        # broker_host = "127.0.0.1"
+        # broker_host = "192.168.100.10"
+        broker_host = "172.16.165.185"
+
+    broker_port = os.getenv("BROKER_PORT")
+    if broker_port is None:
+        broker_port = 61316
+
+    broker_type = BrokerType.ACTIVE_MQ
+
+
     class aAgent(ArbiAgent):
-        def __init__(self, agent_name, broker_url=brokerURL):
+        def __init__(self, agent_name, broker_url = "127.0.0.1", broker_port=61316):
             super().__init__()
             self.broker_url = broker_url
+            self.broker_port = broker_port
             self.agent_name = agent_name
-            #self.agent_url = agent_url
+            self.agent_url = agent_name
 
         def on_data(self, sender: str, data: str):
             print(self.agent_url + "\t-> receive data : " + data)
@@ -62,8 +79,8 @@ if USE_ARBI:
             #print(query)
             return handleReqest(query)
 
-        def execute(self, broker_type=BrokerType.ZERO_MQ):
-            arbi_agent_executor.execute(self.broker_url, self.agent_name, self, broker_type)
+        def execute(self):
+            arbi_agent_executor.execute(self.broker_url, self.broker_port, self.agent_name, self, BrokerType.ACTIVE_MQ)
             print(self.agent_name + " ready")
 
     def msg2arbi(msg, header="MultiRobotPath", pathHeader = "RobotPath", singlePathHeader = "path"):
@@ -238,9 +255,9 @@ def main():
 
     #use arbi
     if USE_ARBI:    
-        arbiAgent = aAgent(agent_name=arbiMAPF)
+        arbiAgent = aAgent(agent_name=arbiMAPF, broker_url=broker_host, broker_port=broker_port)
         arbiAgent.execute()
-        arbiAgent.send("agent://www.arbi.com/receiveTest","Hi from MAPF");
+        arbiAgent.send("agent://www.arbi.com/receiveTest","Hi from MAPF")
     #use arbi end
 
     # Read from input file
