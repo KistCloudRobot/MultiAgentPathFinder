@@ -23,6 +23,8 @@ from deps.cbs import CBS
 from deps.cbs3 import CBS3
 #import handler_tools as ht
 
+from log.setup import logger
+
 USE_ARBI = True
 
 sys.path.append("/home/kist/pythonProject/Python-mcArbiFramework")
@@ -204,6 +206,8 @@ def msg2agentList(msg):
 
 
 def planning_loop(agents_in,print_result=True):
+    logger.info("agents_in = {}".format(agents_in))
+    
     #wait and get agents from server, do the job, then repeat
     #assume agents info(agents_in) is received    
     loop_start = time.time()
@@ -218,20 +222,19 @@ def planning_loop(agents_in,print_result=True):
     solution = cbs.search(print_=print_result)
     end = time.time()
     if(print_result == True):
-        print(end - start)
+        logger.debug(end - start)
     if not solution:
-        pic.printC(" Solution not found",'warning')
+        logger.warning(" Solution not found")
         return -1
 
-    # Write to output file
-    with open(args['output'], 'r') as output_yaml:
-        try:
-            output = yaml.load(output_yaml, Loader=yaml.FullLoader)
-        except yaml.YAMLError as exc:
-            print(exc)
+    runtime = end-start
+    cost = env.compute_solution_cost(solution)
+    logger.info("runtime={}, cost={}".format(runtime, cost))
 
+    # Write to output file
+    output = dict()
     output["schedule"] = solution
-    output["cost"] = env.compute_solution_cost(solution)
+    output["cost"] = cost
     with open(args['output'], 'w') as output_yaml:
         yaml.safe_dump(output, output_yaml)
 
@@ -239,12 +242,12 @@ def planning_loop(agents_in,print_result=True):
     #convert resulting path to node names
     sol_in_node_name = env.solution2NodeNames(solution)
     if(print_result==True):
-        print(sol_in_node_name)
+        logger.info(sol_in_node_name)
 
     #send through ARBI
     loop_end = time.time()
     if(print_result==True):
-        pic.printC("Planning Loop took: " + str(loop_end - loop_start) + " seconds",'green')
+        logger.info("Planning Loop took: " + str(loop_end - loop_start) + " seconds")
     return sol_in_node_name
     #repeating ends here
 
@@ -265,7 +268,7 @@ def main():
         try:
             param = yaml.load(arg, Loader=yaml.FullLoader)
         except yaml.YAMLError as exc:
-            print(exc)
+            logger.warning(exc)
 
     # get param
     dimension = param["map"]["dimensions"]
@@ -336,7 +339,7 @@ def main():
         msg = robot_robot_delim.join(msg_list)
         
         agents_in = msg2agentList(msg)
-        planning_loop(agents_in)
+        planning_loop(agents_in, True)
     #test run end
 
     #wait and get agents from server, do the job, then repeat
@@ -351,4 +354,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    

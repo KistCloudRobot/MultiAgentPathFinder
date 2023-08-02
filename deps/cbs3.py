@@ -4,6 +4,8 @@ from collections import defaultdict
 import printInColor as pic
 from planningTools import HighLevelNode, Constraints
 
+from log.setup import logger
+
 class CBS3(object):
     def __init__(self, environment):
         self.env = environment
@@ -94,7 +96,7 @@ class CBS3(object):
             if not conflict:
                 # print("solution_cost-initial_cost={}".format(P.cost-start.cost))
                 if(print_==True):
-                    pic.printC("solution found",'green')
+                    logger.info("solution found")
                 return self.generate_plan(P.solution)
 
             ##################################
