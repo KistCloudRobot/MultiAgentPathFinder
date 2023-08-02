@@ -23,6 +23,7 @@ from deps.cbs import CBS
 from deps.cbs3 import CBS3
 #import handler_tools as ht
 
+import random
 from log.setup import logger
 
 USE_ARBI = True
@@ -38,7 +39,7 @@ args = {
     "param": pathlib.Path(__file__).parent.resolve() / "yaml/input.yaml",
     "output": pathlib.Path(__file__).parent.resolve() / "yaml/output.yaml"
 }
-MAP_CLOUD_PATH = pathlib.Path(__file__).parent.resolve() / "map_parse/map_cloud.txt"
+MAP_CLOUD_PATH = pathlib.Path(__file__).parent.resolve() / "map_parse/map_cloud_isaac.txt"
 
 #use arbi
 if USE_ARBI:
@@ -302,35 +303,25 @@ def main():
 
     #test run
     if not USE_ARBI:
-        # case1
-        a1 = ["AMR_LIFT1", "140", "118"]
-        a2 = ["AMR_LIFT2", "107", "104"]
-        a3 = ["AMR_LIFT3", "150", "116"]
-        a4 = ["AMR_LIFT4", "116", "115"]
+        # case1 - 82s // corridor conflict btw 1,2
+        a1 = ["AMR_LIFT1", "1134", "1139"]
+        a2 = ["AMR_LIFT2", "1137", "1131"]
+        a3 = ["AMR_LIFT3", "1105", "1108"]
 
-        # # case2
-        # a1 = ["AMR_LIFT1", "138", "138"]
-        # a2 = ["AMR_LIFT2", "115", "148"]
-        # a3 = ["AMR_LIFT3", "142", "103"]
-        # a4 = ["AMR_LIFT4", "102", "102"]
+        # # case2 - no solution // target conflict btw 1,3
+        # a1 = ["AMR_LIFT1", "1151", "1141"]
+        # a2 = ["AMR_LIFT2", "1108", "1147"]
+        # a3 = ["AMR_LIFT3", "1149", "1152"]
 
-        # # case3
-        # a1 = ["AMR_LIFT1", "103", "129"]
-        # a2 = ["AMR_LIFT2", "126", "130"]
-        # a3 = ["AMR_LIFT3", "150", "127"]
-        # a4 = ["AMR_LIFT4", "135", "138"]
-
-        # # case4
-        # a1 = ["AMR_LIFT1", "146", "106"]
-        # a2 = ["AMR_LIFT2", "107", "104"]
-        # a3 = ["AMR_LIFT3", "149", "140"]
-        # a4 = ["AMR_LIFT4", "115", "148"]
+        # # case3 - 119s // corridor conflict btw 1,3
+        # a1 = ["AMR_LIFT1", "1139", "1136"]
+        # a2 = ["AMR_LIFT2", "1105", "1101"]
+        # a3 = ["AMR_LIFT3", "1137", "1141"]
 
         test_robots = []
         test_robots.append(a1)    
         test_robots.append(a2)
         test_robots.append(a3)
-        test_robots.append(a4)
         
         msg_list = []
         for r in test_robots:
@@ -339,6 +330,17 @@ def main():
         msg = robot_robot_delim.join(msg_list)
         
         agents_in = msg2agentList(msg)
+
+        # randomly select start and goal from vertices
+        # vertices_only = []
+        # for (vpos, vname, vtype) in vertices_with_name:
+        #     if (vtype =='node') and (vname != 'nan'):
+        #         vertices_only.append(vpos)
+        # random_vertex = random.sample(vertices_only, 6)
+        # agents_in = []
+        # agents_in.append({'name': 'AMR_LIFT1', 'start': random_vertex[0], 'goal':random_vertex[1]})
+        # agents_in.append({'name': 'AMR_LIFT2', 'start': random_vertex[2], 'goal':random_vertex[3]})
+        # agents_in.append({'name': 'AMR_LIFT3', 'start': random_vertex[4], 'goal':random_vertex[5]})
         planning_loop(agents_in, True)
     #test run end
 

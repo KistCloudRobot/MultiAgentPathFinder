@@ -11,7 +11,7 @@ def is_cell_station(cell):
     else:
         return False
 
-excel_file = "cloudMap_v10.xlsx"
+excel_file = "cloudMap_isaac.xlsx"
 
 sf = StyleFrame.read_excel(excel_file, read_style=True)
 #print(sf)
