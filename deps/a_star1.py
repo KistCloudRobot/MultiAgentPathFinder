@@ -7,6 +7,7 @@ author: Ashwin Bose (@atb033)
 modifed: Hyojeong Kim (@rlagywjd802)
 
 """
+from log.setup import logger
 
 class AStar1():
     def __init__(self, env):
@@ -73,8 +74,8 @@ class AStar1():
 
             # Hyojeong Edit 
             current = min(temp_dict, key=lambda x: (temp_dict.get(x), temp_cat_dict.get(x)))
-            if (temp_dict[current]) > n_lim1:
-                print("{} exceed limit!!!".format(agent_name))
+            if (g_score[current]) > n_lim1:
+                logger.warning("{} exceed limit!!!".format(agent_name))
                 break
             ###########################
 
