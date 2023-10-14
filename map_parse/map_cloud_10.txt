@@ -109,7 +109,7 @@ Vertex
 	edge 142
 	edge 140
 	edge 151
-	edge 150
+	edge 149
 Vertex
 	name 140
 	type 0
@@ -561,9 +561,9 @@ Vertex
 	edge 151
 Vertex
 	name 150
-	type 1
+	type 0
 	pos 135.4 0.0 143.2
-	edge 141
+	edge 149
 	edge 2
 Vertex
 	name 151
@@ -571,6 +571,12 @@ Vertex
 	pos 138.9 0.0 141.9
 	edge 141
 	edge 152
+Vertex
+	name 149
+	type 0
+	pos 138.9 0.0 143.2
+	edge 141
+	edge 150
 Vertex
 	name 156
 	type 0

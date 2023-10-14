@@ -302,11 +302,11 @@ def main():
 
     #test run
     if not USE_ARBI:
-        # case1
-        a1 = ["AMR_LIFT1", "140", "118"]
-        a2 = ["AMR_LIFT2", "107", "104"]
-        a3 = ["AMR_LIFT3", "150", "116"]
-        a4 = ["AMR_LIFT4", "116", "115"]
+        # # case1
+        # a1 = ["AMR_LIFT1", "140", "118"]
+        # a2 = ["AMR_LIFT2", "107", "104"]
+        # a3 = ["AMR_LIFT3", "150", "116"]
+        # a4 = ["AMR_LIFT4", "116", "115"]
 
         # # case2
         # a1 = ["AMR_LIFT1", "138", "138"]
@@ -325,6 +325,12 @@ def main():
         # a2 = ["AMR_LIFT2", "107", "104"]
         # a3 = ["AMR_LIFT3", "149", "140"]
         # a4 = ["AMR_LIFT4", "115", "148"]
+
+        # case5: use 149 as avoiding node
+        a1 = ["AMR_LIFT1", "139", "148"]
+        a2 = ["AMR_LIFT2", "100", "130"]
+        a3 = ["AMR_LIFT3", "150", "107"]
+        a4 = ["AMR_LIFT4", "151", "128"]
 
         test_robots = []
         test_robots.append(a1)    
